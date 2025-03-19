@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+
+- name: Check existence of Joplin Server systemd service
+  ansible.builtin.stat:
+    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ joplin_server_identifier }}.service"
+  register: joplin_server_service_stat
+
+- when: joplin_server_service_stat.stat.exists | bool
+  block:
+    - name: Ensure Joplin Server systemd service is stopped
+      ansible.builtin.service:
+        name: "{{ joplin_server_identifier }}"
+        state: stopped
+        enabled: false
+        daemon_reload: true
+
+    - name: Ensure Joplin Server systemd service doesn't exist
+      ansible.builtin.file:
+        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ joplin_server_identifier }}.service"
+        state: absent
+
+    - name: Ensure Joplin Server base directory doesn't exist
+      ansible.builtin.file:
+        path: "{{ joplin_server_base_path }}"
+        state: absent

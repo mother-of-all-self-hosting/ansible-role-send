@@ -1,0 +1,184 @@
+# SPDX-FileCopyrightText: 2023 - 2024 Nikita Chernyi
+# SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
+# SPDX-FileCopyrightText: 2025 MASH project contributors
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# Project source code URL: https://github.com/laurent22/joplin
+
+joplin_server_enabled: true
+
+joplin_server_identifier: joplin-server
+joplin_server_base_path: "{{ joplin_server_identifier }}"
+
+# There are only "latest" or "beta" tags.
+# See: https://github.com/laurent22/joplin/tree/dev/packages/server#supported-docker-tags
+joplin_server_version: latest
+
+joplin_server_uid: ''
+joplin_server_gid: ''
+
+# The hostname at which Joplin Server is served.
+joplin_server_hostname: ''
+
+# The path at which Joplin Server is exposed.
+# This value must either be `/` or not end with a slash (e.g. `/joplin`).
+joplin_server_path_prefix: /
+
+joplin_server_container_image: "{{ joplin_server_container_image_registry_prefix }}joplin/server:{{ joplin_server_container_image_tag }}"
+joplin_server_container_image_tag: "{{ joplin_server_version }}"
+joplin_server_container_image_registry_prefix: "{{ joplin_server_container_image_registry_prefix_upstream }}"
+joplin_server_container_image_registry_prefix_upstream: "{{ joplin_server_container_image_registry_prefix_upstream_default }}"
+joplin_server_container_image_registry_prefix_upstream_default: docker.io/
+joplin_server_container_image_force_pull: "{{ joplin_server_container_image.endswith(':latest') }}"
+
+# Controls whether the container exposes its HTTP port (tcp/80 in the container).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
+joplin_server_container_http_host_bind_port: ''
+
+# The base container network. It will be auto-created by this role if it doesn't exist already.
+joplin_server_container_network: "{{ joplin_server_identifier }}"
+
+# A list of additional container networks that the container would be connected to.
+# The role does not create these networks, so make sure they already exist.
+# Use this to expose this container to another reverse proxy, which runs in a different container network.
+joplin_server_container_additional_networks: "{{ joplin_server_container_additional_networks_auto + joplin_server_container_additional_networks_custom }}"
+joplin_server_container_additional_networks_auto: []
+joplin_server_container_additional_networks_custom: []
+
+# joplin_server_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
+# See `../templates/labels.j2` for details.
+#
+# To inject your own other container labels, see `joplin_server_container_labels_additional_labels`.
+joplin_server_container_labels_traefik_enabled: true
+joplin_server_container_labels_traefik_docker_network: "{{ joplin_server_container_network }}"
+joplin_server_container_labels_traefik_hostname: "{{ joplin_server_hostname }}"
+# The path prefix must either be `/` or not end with a slash (e.g. `/joplin`).
+joplin_server_container_labels_traefik_path_prefix: "{{ joplin_server_path_prefix }}"
+joplin_server_container_labels_traefik_rule: "Host(`{{ joplin_server_container_labels_traefik_hostname }}`){% if joplin_server_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ joplin_server_container_labels_traefik_path_prefix }}`){% endif %}"
+joplin_server_container_labels_traefik_priority: 0
+joplin_server_container_labels_traefik_entrypoints: web-secure
+joplin_server_container_labels_traefik_tls: "{{ joplin_server_container_labels_traefik_entrypoints != 'web' }}"
+joplin_server_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+
+# Controls which additional headers to attach to all HTTP responses.
+# To add your own custom response headers, use `joplin_server_container_labels_traefik_additional_response_headers_custom`
+joplin_server_container_labels_traefik_additional_response_headers: "{{ joplin_server_container_labels_traefik_additional_response_headers_auto | combine(joplin_server_container_labels_traefik_additional_response_headers_custom) }}"
+joplin_server_container_labels_traefik_additional_response_headers_auto: |
+  {{
+    {}
+    | combine ({'X-XSS-Protection': joplin_server_http_header_xss_protection} if joplin_server_http_header_xss_protection else {})
+    | combine ({'X-Content-Type-Options': joplin_server_http_header_content_type_options} if joplin_server_http_header_content_type_options else {})
+    | combine ({'Content-Security-Policy': joplin_server_http_header_content_security_policy} if joplin_server_http_header_content_security_policy else {})
+    | combine ({'Permission-Policy': joplin_server_http_header_content_permission_policy} if joplin_server_http_header_content_permission_policy else {})
+    | combine ({'Strict-Transport-Security': joplin_server_http_header_strict_transport_security} if joplin_server_http_header_strict_transport_security and joplin_server_container_labels_traefik_tls else {})
+  }}
+joplin_server_container_labels_traefik_additional_response_headers_custom: {}
+
+# joplin_server_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
+# See `../templates/labels.j2` for details.
+#
+# Example:
+# joplin_server_container_labels_additional_labels: |
+#   my.label=1
+#   another.label="here"
+joplin_server_container_labels_additional_labels: ''
+
+# A list of extra arguments to pass to the container (`docker run` command)
+joplin_server_container_extra_arguments: []
+
+# Specifies the value of the `X-XSS-Protection` header
+# Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
+#
+# Learn more about it is here:
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+# - https://portswigger.net/web-security/cross-site-scripting/reflected
+joplin_server_http_header_xss_protection: "1; mode=block"
+
+# Specifies the value of the `X-Content-Type-Options` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+joplin_server_http_header_content_type_options: nosniff
+
+# Specifies the value of the `Content-Security-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+joplin_server_http_header_content_security_policy: frame-ancestors 'self'
+
+# Specifies the value of the `Permission-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permission-Policy
+joplin_server_http_header_content_permission_policy: "{{ 'interest-cohort=()' if joplin_server_floc_optout_enabled else '' }}"
+
+# Specifies the value of the `Strict-Transport-Security` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+joplin_server_http_header_strict_transport_security: "max-age=31536000; includeSubDomains{{ '; preload' if joplin_server_hsts_preload_enabled else '' }}"
+
+# Controls whether to send a "Permissions-Policy interest-cohort=();" header along with all responses
+#
+# Learn more about what it is here:
+# - https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea
+# - https://paramdeo.com/blog/opting-your-website-out-of-googles-floc-network
+# - https://amifloced.org/
+#
+# Of course, a better solution is to just stop using browsers (like Chrome), which participate in such tracking practices.
+# See: `joplin_server_content_permission_policy`
+joplin_server_floc_optout_enabled: true
+
+# Controls if HSTS preloading is enabled
+#
+# In its strongest and recommended form, the [HSTS policy](https://www.chromium.org/hsts) includes all subdomains, and
+# indicates a willingness to be "preloaded" into browsers:
+# `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+# For more information visit:
+# - https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+# - https://hstspreload.org/#opt-in
+# See: `joplin_server_http_header_strict_transport_security`
+joplin_server_hsts_preload_enabled: false
+
+# List of systemd services that the Joplin Server systemd service depends on
+joplin_server_systemd_required_services_list: "{{ joplin_server_systemd_required_services_list_default + joplin_server_systemd_required_services_list_auto + joplin_server_systemd_required_services_list_custom }}"
+joplin_server_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
+joplin_server_systemd_required_services_list_auto: []
+joplin_server_systemd_required_services_list_custom: []
+
+# List of systemd services that the Joplin Server systemd service wants
+joplin_server_systemd_wanted_services_list: []
+
+# env.j2: General config
+joplin_server_environment_variable_app_name: Joplin Server
+joplin_server_environment_variable_error_stack_traces_enabled: false
+#
+# The port number in the container
+# See: https://github.com/laurent22/joplin/tree/dev/packages/server#configure-docker-for-joplin-server
+joplin_server_environment_variable_http_port: 22300
+
+# env.j2: URL config
+joplin_server_environment_variable_base_url: "https://{{ joplin_server_hostname }}{{ '' if joplin_server_path_prefix == '/' else joplin_server_path_prefix }}"
+
+# env.j2: Database config
+joplin_server_environment_variable_database_host: ''
+joplin_server_environment_variable_database_port: 5432
+joplin_server_environment_variable_database_user: 'joplin-server'
+joplin_server_environment_variable_database_password: 'some-password'
+joplin_server_environment_variable_database_name: 'joplin-server'
+joplin_server_environment_variable_database_connection_string: 'postgres://{{ joplin_server_environment_variable_database_user }}:{{ joplin_server_environment_variable_database_password }}@{{ joplin_server_environment_variable_database_host }}:{{ joplin_server_environment_variable_database_port }}/{{ joplin_server_environment_variable_database_name }}'
+
+# env.j2: Mailer config
+joplin_server_environment_variable_mailer_enabled: false
+joplin_server_environment_variable_mailer_host: ''  # Hostname
+joplin_server_environment_variable_mailer_port: 587
+joplin_server_environment_variable_mailer_user: ''  # Username of the SMTP user
+joplin_server_environment_variable_mailer_password: ''  # Password of the SMTP user
+joplin_server_environment_variable_mailer_noreply_name: ''
+joplin_server_environment_variable_mailer_noreply_email: ''  # Email address of the sender
+#
+# Controls the `MAILER_SECURITY` environment variable
+# Valid values: MailerSecurity.Starttls, MailerSecurity.Tls, MailerSecurity.None
+joplin_server_environment_variable_mailer_security: MailerSecurity.Starttls
+
+# Additional environment variables.
+# See: phttps://github.com/laurent22/joplin/blob/dev/packages/server/src/env.ts
+joplin_server_environment_variables_additional_variables: ''

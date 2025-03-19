@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+
+- name: Ensure Joplin Server paths exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+    owner: "{{ joplin_server_uid }}"
+    group: "{{ joplin_server_gid }}"
+  with_items:
+    - "{{ joplin_server_base_path }}"
+
+- name: Ensure Joplin Server support files installed
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/{{ item }}.j2"
+    dest: "{{ joplin_server_base_path }}/{{ item }}"
+    mode: "0640"
+    owner: "{{ joplin_server_uid }}"
+    group: "{{ joplin_server_gid }}"
+  with_items:
+    - env
+    - labels
+
+- name: Ensure Joplin Server container image is pulled
+  community.docker.docker_image:
+    name: "{{ joplin_server_container_image }}"
+    source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
+    force_source: "{{ joplin_server_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
+    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else joplin_server_container_image_force_pull }}"
+
+- name: Ensure Joplin Server container network is created
+  community.general.docker_network:
+    enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
+    name: "{{ joplin_server_container_network }}"
+    driver: bridge
+    driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
+
+- name: Ensure Joplin Server systemd service is present
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/systemd/joplin-server.service.j2"
+    dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ joplin_server_identifier }}.service"
+    mode: "0644"

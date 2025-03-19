@@ -1,0 +1,59 @@
+{#
+SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+SPDX-FileCopyrightText: 2024 Nikita Chernyi
+SPDX-FileCopyrightText: 2025 Suguru Hirahara
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+#}
+
+#jinja2: lstrip_blocks: "True"
+[Unit]
+Description=Joplin Server ({{ joplin_server_identifier }})
+{% for service in joplin_server_systemd_required_services_list %}
+Requires={{ service }}
+After={{ service }}
+{% endfor %}
+{% for service in joplin_server_systemd_wanted_services_list %}
+Wants={{ service }}
+{% endfor %}
+DefaultDependencies=no
+
+[Service]
+Type=simple
+Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ joplin_server_identifier }} 2>/dev/null || true'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ joplin_server_identifier }} 2>/dev/null || true'
+
+{#
+  Note: running with "--user={{ joplin_server_uid }}:{{ joplin_server_gid }}" returns errors
+  related to permissions such as "Error: EACCES: permission denied, mkdir '/.pm2/logs'" and
+  "Error: EACCES: permission denied, mkdir '/.pm2/pids'".
+#}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
+			--rm \
+			--name={{ joplin_server_identifier }} \
+			--log-driver=none \
+			--cap-drop=ALL \
+			--network={{ joplin_server_container_network }} \
+			--env-file={{ joplin_server_base_path }}/env \
+			--label-file={{ joplin_server_base_path }}/labels \
+			{% for arg in joplin_server_container_extra_arguments %}
+			{{ arg }} \
+			{% endfor %}
+			{{ joplin_server_container_image }}
+
+{% for network in joplin_server_container_additional_networks %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ joplin_server_identifier }}
+{% endfor %}
+
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ joplin_server_identifier }}
+
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ joplin_server_identifier }} 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ joplin_server_identifier }} 2>/dev/null || true'
+
+Restart=always
+RestartSec=30
+SyslogIdentifier={{ joplin_server_identifier }}
+
+[Install]
+WantedBy=multi-user.target

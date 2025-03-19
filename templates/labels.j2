@@ -1,0 +1,52 @@
+{#
+SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+SPDX-FileCopyrightText: 2025 Suguru Hirahara
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+#}
+
+{% if joplin_server_container_labels_traefik_enabled %}
+traefik.enable=true
+
+{% if joplin_server_container_labels_traefik_docker_network %}
+traefik.docker.network={{ joplin_server_container_labels_traefik_docker_network }}
+{% endif %}
+
+{% set middlewares = [] %}
+
+{% if joplin_server_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ joplin_server_identifier }}-slashless-redirect.redirectregex.regex=({{ joplin_server_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ joplin_server_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
+{% set middlewares = middlewares + [joplin_server_identifier + '-slashless-redirect'] %}
+{% endif %}
+
+{% if joplin_server_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ joplin_server_identifier }}-strip-prefix.stripprefix.prefixes={{ joplin_server_container_labels_traefik_path_prefix }}
+{% set middlewares = middlewares + [joplin_server_identifier + '-strip-prefix'] %}
+{% endif %}
+
+{% if joplin_server_container_labels_traefik_additional_response_headers.keys() | length > 0 %}
+{% for name, value in joplin_server_container_labels_traefik_additional_response_headers.items() %}
+traefik.http.middlewares.{{ joplin_server_identifier }}-add-headers.headers.customresponseheaders.{{ name }}={{ value }}
+{% endfor %}
+{% set middlewares = middlewares + [joplin_server_identifier + '-add-headers'] %}
+{% endif %}
+
+traefik.http.routers.{{ joplin_server_identifier }}.rule={{ joplin_server_container_labels_traefik_rule }}
+{% if joplin_server_container_labels_traefik_priority | int > 0 %}
+traefik.http.routers.{{ joplin_server_identifier }}.priority={{ joplin_server_container_labels_traefik_priority }}
+{% endif %}
+traefik.http.routers.{{ joplin_server_identifier }}.service={{ joplin_server_identifier }}
+{% if middlewares | length > 0 %}
+traefik.http.routers.{{ joplin_server_identifier }}.middlewares={{ middlewares | join(',') }}
+{% endif %}
+traefik.http.routers.{{ joplin_server_identifier }}.entrypoints={{ joplin_server_container_labels_traefik_entrypoints }}
+traefik.http.routers.{{ joplin_server_identifier }}.tls={{ joplin_server_container_labels_traefik_tls | to_json }}
+{% if joplin_server_container_labels_traefik_tls %}
+traefik.http.routers.{{ joplin_server_identifier }}.tls.certResolver={{ joplin_server_container_labels_traefik_tls_certResolver }}
+{% endif %}
+
+traefik.http.services.{{ joplin_server_identifier }}.loadbalancer.server.port={{ joplin_server_environment_variable_http_port }}
+{% endif %}
+
+{{ joplin_server_container_labels_additional_labels }}
