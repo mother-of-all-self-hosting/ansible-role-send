@@ -212,5 +212,5 @@ send_environment_variable_aws_secret_access_key: ''
 send_environment_variable_gcs_bucket: ''
 
 # Additional environment variables.
-# See: phttps://github.com/laurent22/send/blob/dev/packages/server/src/env.ts
+# See: https://github.com/timvisee/send/blob/master/server/config.js
 send_environment_variables_additional_variables: ''
