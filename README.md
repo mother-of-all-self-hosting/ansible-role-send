@@ -5,11 +5,9 @@ SPDX-FileCopyrightText: 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Joplin Server Ansible role
+# Send Ansible role
 
-[![REUSE status](https://api.reuse.software/badge/codeberg.org/acioustick/ansible-role-joplin-server)](https://api.reuse.software/info/codeberg.org/acioustick/ansible-role-joplin-server)
-
-This is an [Ansible](https://www.ansible.com/) role which installs [Joplin Server](https://joplinapp.org/help/dev/spec/architecture#joplin-server) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [Send](https://github.com/timvisee/send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
 This role *implicitly* depends on:
 
@@ -18,4 +16,4 @@ This role *implicitly* depends on:
 
 Check [defaults/main.yml](defaults/main.yml) for the full list of supported options.
 
-💡 See this [document](docs/configuring-joplin-server.md) for details about setting up the service with this role.
+💡 See this [document](docs/configuring-send.md) for details about setting up the service with this role.

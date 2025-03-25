@@ -6,21 +6,21 @@
 ---
 
 - block:
-    - when: joplin_server_enabled | bool
+    - when: send_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
 
-    - when: joplin_server_enabled | bool
+    - when: send_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
   tags:
     - setup-all
-    - setup-joplin-server
+    - setup-send
     - install-all
-    - install-joplin-server
+    - install-send
 
 - block:
-    - when: not joplin_server_enabled | bool
+    - when: not send_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
   tags:
     - setup-all
-    - setup-joplin-server
+    - setup-send
