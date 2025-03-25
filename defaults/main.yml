@@ -147,61 +147,62 @@ send_systemd_required_services_list_custom: []
 # List of systemd services that the Send systemd service wants
 send_systemd_wanted_services_list: []
 
-# Server configuration
+# env.j2: Server configuration
 #
-# Set the HTTPS URL where traffic will be served (e.g. `https://send.firefox.com`)
-send_environment_variable_base_url: ''
-# Control whether the base URL is detected automatically using browser if `BASE_URL` is unset (defaults to `false`)
-send_environment_variable_detect_base_url: ''
-# Set the port number on which the server will listen (defaults to `1443`)
-send_environment_variable_port: ''
-# Control whether Send is run in `development` mode (unsafe) or `production` mode (the default)
-send_environment_variable_node_env: ''
-# Set a URL to a contact page for DMCA requests (empty / not shown by default)
+# Set the HTTPS URL where traffic will be served
+send_environment_variable_base_url: https://{{ send_hostname }}
+# Control whether the base URL is detected automatically using browser if send_environment_variable_base_url is unset
+send_environment_variable_detect_base_url: false
+# Set the port number on which the server will listen
+send_environment_variable_port: 1443
+# Control whether Send is run on `development` mode (unsafe) or `production` mode
+send_environment_variable_node_env: production
+# Set a URL to a contact page for DMCA requests
 send_environment_variable_send_footer_dmca_url: ''
-# Set a Sentry Client ID and DSN for error tracking (optional, disabled by default)
+# Set a Sentry Client ID and DSN for error tracking
 send_environment_variable_sentry_client: ''
 send_environment_variable_sentry_dsn: ''
 
-# Upload and Download Limits
+# env.j2: Upload and Download Limits
 #
-# Set the maximum upload file size in bytes (defaults to `2147483648` aka 2GB)
-send_environment_variable_max_file_size: ''
-# Set the maximum number of files per archive (defaults to `64`)
-send_environment_variable_max_files_per_archive: ''
-# Set the maximum upload expiry time in seconds (defaults to `604800` = 7 days)
-send_environment_variable_max_expire_seconds: ''
-# Set the maximum number of downloads (defaults to `100`)
-send_environment_variable_max_downloads: ''
+# Set the maximum upload file size in bytes (defaults to 2GB)
+send_environment_variable_max_file_size: 2147483648
+# Set the maximum number of files per archive
+send_environment_variable_max_files_per_archive: 64
+# Set the maximum upload expiry time in seconds (defaults to 7 days)
+send_environment_variable_max_expire_seconds: 604800
+# Set the maximum number of downloads
+send_environment_variable_max_downloads: 100
 # Set expiration time options to show on UI dropdown, e.g. `3600,86400,604800,2592000,31536000`
 send_environment_variable_expire_times_seconds: ''
 # Set download limit options to show on UI dropdown, e.g. `10,1,2,5,10,15,25,50,100,1000`
 send_environment_variable_download_counts: ''
-# Set the default download limit displayed on UI (defaults to `1`)
-send_environment_variable_default_downloads: ''
-# Set the default expiration time displayed on UI (defaults to `86400`)
-send_environment_variable_default_expire_seconds: ''
+# Set the default download limit displayed on UI
+send_environment_variable_default_downloads: 1
+# Set the default expiration time displayed on UI
+send_environment_variable_default_expire_seconds: 86400
 
-# Storage Backend Options
-# Set a hostname, port, and pass of the Redis, KeyDB, or Valkey server (defaults to `localhost`, `6379`, and no password)
-send_environment_variable_redis_host: ''
-send_environment_variable_redis_port: ''
+# env.j2: Storage Backend Options
+#
+# Set a hostname, port, and pass of the Redis, KeyDB, or Valkey server
+send_environment_variable_redis_host: localhost
+send_environment_variable_redis_port: 6379
 send_environment_variable_redis_user: ''
 send_environment_variable_redis_password: ''
 send_environment_variable_redis_db: ''
-# Set a directory for storage inside the Docker container (defaults to `/uploads`)
-send_environment_variable_file_dir: ''
-# Set a S3 bucket name to use (only set if using S3 for storage)
+# Set a directory for storage inside the Docker container
+send_environment_variable_file_dir: /uploads
+# Set a S3 bucket name to use
 send_environment_variable_S3_bucket: ''
 # Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
 send_environment_variable_S3_endpoint: ''
-# Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects (defaults to `false`)
-send_environment_variable_S3_use_path_style_endpoint: ''
-# Set a S3 access key ID (only set if using S3 for storage)
+# Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects
+send_environment_variable_S3_use_path_style_endpoint: false
+# Set a S3 access key ID
 send_environment_variable_aws_access_key_id: ''
-# Set a S3 secret access key ID (only set if using S3 for storage)
+# Set a S3 secret access key ID
 send_environment_variable_aws_secret_access_key: ''
-# Set a Google Cloud Storage bucket (only set if using GCP for storage)
+# Set a Google Cloud Storage bucket
 send_environment_variable_gcs_bucket: ''
 
 # Additional environment variables.
