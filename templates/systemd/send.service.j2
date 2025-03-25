@@ -32,6 +32,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --cap-drop=ALL \
       --read-only \
       --network={{ send_container_network }} \
+      {% if send_container_http_host_bind_port %}
+      -p {{ send_container_http_host_bind_port }}:1443 \
+      {% endif %}
       --env-file={{ send_base_path }}/env \
       --label-file={{ send_base_path }}/labels \
       {% for volume in send_container_additional_volumes %}
