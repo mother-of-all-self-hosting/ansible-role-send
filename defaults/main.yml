@@ -179,14 +179,14 @@ send_environment_variable_max_files_per_archive: 64
 send_environment_variable_max_expire_seconds: 604800
 # Set the maximum number of downloads
 send_environment_variable_max_downloads: 20
-# Set expiration time options to show on UI dropdown, e.g. `3600,86400,604800,2592000,31536000`
-send_environment_variable_expire_times_seconds: ''
-# Set download limit options to show on UI dropdown, e.g. `10,1,2,5,10,15,20`
-send_environment_variable_download_counts: ''
+# Set expiration time options to show on UI dropdown
+send_environment_variable_expire_times_seconds: 300, 3600, 86400, 604800
+# Set download limit options to show on UI dropdown
+send_environment_variable_download_counts: 1, 2, 3, 4, 5, 20
 # Set the default download limit displayed on UI
-send_environment_variable_default_downloads: 1
+send_environment_variable_default_downloads: '1'
 # Set the default expiration time displayed on UI
-send_environment_variable_default_expire_seconds: 86400
+send_environment_variable_default_expire_seconds: '86400'
 
 # env.j2: Storage Backend Options
 #
