@@ -80,6 +80,68 @@ send_environment_variable_redis_db: ''
 
 Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with the hostname of your Redis server. If the Redis server runs on the same host as Send, set `localhost`.
 
+### Configure a storage backend
+
+The service provides these storage backend options: local filesystem (default), Amazon S3 compatible object storage, and Google Cloud Storage.
+
+#### Local filesystem (default)
+
+With the default configuration, the directory for storing files inside the Docker container is set to `/uploads`. You can change it by adding and adjusting the following configuration to your `vars.yml` file:
+
+```yaml
+send_environment_variable_file_dir: YOUR_DIRECTORY_HERE
+```
+
+**By default this role removes uploaded files when uninstalling the service**. In order to make those files persistent, you need to add a Docker volume to mount in the container, so that the directory for storing files is shared with the host machine.
+
+To add the volume, prepare a directory on the host machine and add the following configuration to your `vars.yml` file, setting the directory path to `src`:
+
+```yaml
+send_container_additional_volumes:
+  - type: bind
+    src: /path/on/the/host
+    dst: "{{ send_environment_variable_file_dir }}"
+    options:
+```
+
+Make sure permissions of the directory specified to `src` (`/path/on/the/host`).
+
+#### Amazon S3 compatible object storage
+
+To use Amazon S3 or a S3 compatible object storage, add the following configuration to your `vars.yml` file (adapt to your needs):
+
+```yaml
+send_storage_backend_option: s3compatible
+
+# Set a S3 bucket name to use
+send_environment_variable_S3_bucket: ''
+
+# Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
+# send_environment_variable_S3_endpoint: ''
+
+# Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects
+send_environment_variable_S3_use_path_style_endpoint: false
+
+# Set a S3 access key ID
+send_environment_variable_aws_access_key_id: ''
+
+# Set a S3 secret access key ID
+send_environment_variable_aws_secret_access_key: ''
+```
+
+#### Google Cloud Storage
+
+To use Google Cloud Storage, add and adjust the following configuration to your `vars.yml` file:
+
+```yaml
+send_storage_backend_option: gcs
+
+# Set a Google Cloud Storage bucket
+send_environment_variable_gcs_bucket: ''
+```
+
+Before using it, authentication should be set up with [Application Default Credentials](https://cloud.google.com/docs/authentication/production#auth-cloud-implicit-nodejs).
+
 ### Configure upload and download limits (optional)
 
 You can configure settings for uploading and downloading limits by adding the following configuration to your `vars.yml` file (adapt to your needs):
