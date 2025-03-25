@@ -28,11 +28,11 @@ send_hostname: ''
 # This value must either be `/` or not end with a slash (e.g. `/send`).
 send_path_prefix: /
 
-send_container_image: "{{ send_container_image_registry_prefix }}joplin/server:{{ send_container_image_tag }}"
+send_container_image: "{{ send_container_image_registry_prefix }}timvisee/send:{{ send_container_image_tag }}"
 send_container_image_tag: "{{ send_version }}"
 send_container_image_registry_prefix: "{{ send_container_image_registry_prefix_upstream }}"
 send_container_image_registry_prefix_upstream: "{{ send_container_image_registry_prefix_upstream_default }}"
-send_container_image_registry_prefix_upstream_default: docker.io/
+send_container_image_registry_prefix_upstream_default: registry.gitlab.com/
 send_container_image_force_pull: "{{ send_container_image.endswith(':latest') }}"
 
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
