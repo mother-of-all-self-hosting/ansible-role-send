@@ -16,6 +16,7 @@
     - send_hostname
     - send_path_prefix
     - send_container_network
+    - send_environment_variable_redis_host
 
 - when: send_container_labels_traefik_enabled | bool
   block:
