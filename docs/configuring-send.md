@@ -16,21 +16,21 @@ SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Setting up Joplin Server
+# Setting up Send
 
-This is an [Ansible](https://www.ansible.com/) role which installs [Joplin Server](https://sendapp.org/help/dev/spec/architecture#send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [Send](https://sendapp.org/help/dev/spec/architecture#send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-Joplin Server is a self-hosted server component for [Joplin](https://sendapp.org/) — a privacy-focused note taking and to-do application, which can handle a large number of notes organized into notebooks. Joplin is available on Desktop (Windows, macOS, and Linux) and mobile (Android and iOS). There is a [CLI application](https://sendapp.org/help/install/#terminal-application) as well.
+Send is a self-hosted server component for [Joplin](https://sendapp.org/) — a privacy-focused note taking and to-do application, which can handle a large number of notes organized into notebooks. Joplin is available on Desktop (Windows, macOS, and Linux) and mobile (Android and iOS). There is a [CLI application](https://sendapp.org/help/install/#terminal-application) as well.
 
-Joplin offers multiple methods for application data synchronization among devices using End-to-End Encryption, including various cloud services like Nextcloud, Dropbox, Microsoft's OneDrive, etc. **As Joplin Server is designed specifically for Joplin, it offers improved performance, compared to other synchronization targets.**
+Joplin offers multiple methods for application data synchronization among devices using End-to-End Encryption, including various cloud services like Nextcloud, Dropbox, Microsoft's OneDrive, etc. **As Send is designed specifically for Joplin, it offers improved performance, compared to other synchronization targets.**
 
-While Joplin is architectured to be "offline first", with a Joplin Server it is able to not only synchronize data among devices but also [share a notebook](https://sendapp.org/help/apps/share_notebook/) with users and [publish a note](https://sendapp.org/help/apps/publish_note/) on the internet to share it with anyone.
+While Joplin is architectured to be "offline first", with a Send it is able to not only synchronize data among devices but also [share a notebook](https://sendapp.org/help/apps/share_notebook/) with users and [publish a note](https://sendapp.org/help/apps/publish_note/) on the internet to share it with anyone.
 
-See the project's [documentation](https://sendapp.org/help/) to learn what Joplin and Joplin Server do and why they might be useful to you.
+See the project's [documentation](https://sendapp.org/help/) to learn what Joplin and Send do and why they might be useful to you.
 
 ## Adjusting the playbook configuration
 
-To enable a Joplin Server with this role, add the following configuration to your `vars.yml` file.
+To enable a Send with this role, add the following configuration to your `vars.yml` file.
 
 **Note**: the path should be something like `inventory/host_vars/mash.example.com/vars.yml` if you use the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting/mash-playbook) Ansible playbook.
 
@@ -52,7 +52,7 @@ send_enabled: true
 
 ### Set the hostname
 
-To enable the Joplin Server you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
+To enable the Send you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
 send_hostname: "example.com"
@@ -68,7 +68,7 @@ send_path_prefix: /send
 
 ### Configure the mailer
 
-During installation, the Joplin Server by default creates its admin user with `admin@localhost` as its email address and `admin` as its password. To change the credentials from the admin page after logging in, authentication is required with an email sent to the updated email address. Email address authentication is also required by default for changing the credentials of non-admin users.
+During installation, the Send by default creates its admin user with `admin@localhost` as its email address and `admin` as its password. To change the credentials from the admin page after logging in, authentication is required with an email sent to the updated email address. Email address authentication is also required by default for changing the credentials of non-admin users.
 
 To enable email address authentication, you can configure the mailer by adding the following configuration to your `vars.yml` file (adapt to your needs):
 
@@ -96,7 +96,7 @@ Take a look at:
 
 - [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `send_environment_variables_additional_variables` variable
 
-For a complete list of Joplin Server's config options that you could put in `send_environment_variables_additional_variables`, see its [environment variables](https://github.com/laurent22/send/blob/dev/packages/server/src/env.ts).
+For a complete list of Send's config options that you could put in `send_environment_variables_additional_variables`, see its [environment variables](https://github.com/laurent22/send/blob/dev/packages/server/src/env.ts).
 
 ## Installing
 
@@ -114,19 +114,19 @@ After the installation has completed, you can run the command below to confirm t
 curl https://example.com/api/ping
 ```
 
-If it works properly, the command should return a message like this: `{"status":"ok","message":"Joplin Server is running"}`
+If it works properly, the command should return a message like this: `{"status":"ok","message":"Send is running"}`
 
 ## Usage
 
-To configure and manage the Joplin Server, go to `example.com/login` specified with `send_hostname`, enter the admin credentials (email address: `admin@localhost`, password: `admin`) to log in. **After logging in, make sure to change the credentials.**
+To configure and manage the Send, go to `example.com/login` specified with `send_hostname`, enter the admin credentials (email address: `admin@localhost`, password: `admin`) to log in. **After logging in, make sure to change the credentials.**
 
-[<img src="../assets/send-login.png" title="Log in UI on Joplin Server" width="400">](../assets/send-login.png)
+[<img src="../assets/send-login.png" title="Log in UI on Send" width="400">](../assets/send-login.png)
 
 For security reason, the developer recommends [here](https://github.com/laurent22/send/tree/dev/packages/server#create-a-user-for-sync) to create a non-admin user for synchronization. You can create one on the "Users" page. After creating, you can use the email and password you specified for the user to synchronize data with your Joplin clients.
 
-[<img src="../assets/send-admin-users.png" title="User administration UI on Joplin Server" width="400">](../assets/send-admin-users.png)
+[<img src="../assets/send-admin-users.png" title="User administration UI on Send" width="400">](../assets/send-admin-users.png)
 
-[<img src="../assets/send-add-user.png" title="Adding user UI on Joplin Server" width="400">](../assets/send-add-user.png)
+[<img src="../assets/send-add-user.png" title="Adding user UI on Send" width="400">](../assets/send-add-user.png)
 
 ### Configure the client application
 
@@ -134,7 +134,7 @@ For security reason, the developer recommends [here](https://github.com/laurent2
 
 Open the configuration screen (see [the official documentation](https://sendapp.org/help/apps/config_screen) about how to; it depends on which platform you are on), and select the "synchronisation" section.
 
-In the list of synchronization targets, select "Joplin Server (Beta)". Enter the Joplin Server URL (`example.com`), your email and password for your account, and confirm them. You can also configure synchronization interval (default: 5 minutes). Before confirming, you can make sure the configuration by selecting "Check synchronisation configuration".
+In the list of synchronization targets, select "Send (Beta)". Enter the Send URL (`example.com`), your email and password for your account, and confirm them. You can also configure synchronization interval (default: 5 minutes). Before confirming, you can make sure the configuration by selecting "Check synchronisation configuration".
 
 [<img src="../assets/send-3.2.13.png" title="Synchronization configuration UI on Joplin 3.2.13 (AppImage)" width="400">](../assets/send-3.2.13.png)
 

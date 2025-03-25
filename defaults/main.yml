@@ -21,10 +21,10 @@ send_version: latest
 send_uid: ''
 send_gid: ''
 
-# The hostname at which Joplin Server is served.
+# The hostname at which Send is served.
 send_hostname: ''
 
-# The path at which Joplin Server is exposed.
+# The path at which Send is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/send`).
 send_path_prefix: /
 
@@ -138,17 +138,17 @@ send_floc_optout_enabled: true
 # See: `send_http_header_strict_transport_security`
 send_hsts_preload_enabled: false
 
-# List of systemd services that the Joplin Server systemd service depends on
+# List of systemd services that the Send systemd service depends on
 send_systemd_required_services_list: "{{ send_systemd_required_services_list_default + send_systemd_required_services_list_auto + send_systemd_required_services_list_custom }}"
 send_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
 send_systemd_required_services_list_auto: []
 send_systemd_required_services_list_custom: []
 
-# List of systemd services that the Joplin Server systemd service wants
+# List of systemd services that the Send systemd service wants
 send_systemd_wanted_services_list: []
 
 # env.j2: General config
-send_environment_variable_app_name: Joplin Server
+send_environment_variable_app_name: Send
 send_environment_variable_error_stack_traces_enabled: false
 #
 # The port number in the container
