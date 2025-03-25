@@ -1,9 +1,9 @@
 galaxy_info:
   author: Suguru Hirahara
   company: progressiv
-  role_name: joplin-server
+  role_name: send
   namespace: progressiv
-  description: Joplin Server
+  description: Send by Tim Visée
   platforms:
     - name: Debian
       versions:

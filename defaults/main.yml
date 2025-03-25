@@ -7,15 +7,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-# Project source code URL: https://github.com/laurent22/joplin
+# Project source code URL: https://github.com/timvisee/send
 
 joplin_server_enabled: true
 
 joplin_server_identifier: joplin-server
 joplin_server_base_path: "{{ joplin_server_identifier }}"
 
-# There are only "latest" or "beta" tags.
-# See: https://github.com/laurent22/joplin/tree/dev/packages/server#supported-docker-tags
+# There are version tags, but use "latest" for now, as it contains some
+# fixes which are yet to be released for tagged images.
 joplin_server_version: latest
 
 joplin_server_uid: ''
