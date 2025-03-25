@@ -18,15 +18,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up Joplin Server
 
-This is an [Ansible](https://www.ansible.com/) role which installs [Joplin Server](https://joplinapp.org/help/dev/spec/architecture#send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [Joplin Server](https://sendapp.org/help/dev/spec/architecture#send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-Joplin Server is a self-hosted server component for [Joplin](https://joplinapp.org/) — a privacy-focused note taking and to-do application, which can handle a large number of notes organized into notebooks. Joplin is available on Desktop (Windows, macOS, and Linux) and mobile (Android and iOS). There is a [CLI application](https://joplinapp.org/help/install/#terminal-application) as well.
+Joplin Server is a self-hosted server component for [Joplin](https://sendapp.org/) — a privacy-focused note taking and to-do application, which can handle a large number of notes organized into notebooks. Joplin is available on Desktop (Windows, macOS, and Linux) and mobile (Android and iOS). There is a [CLI application](https://sendapp.org/help/install/#terminal-application) as well.
 
 Joplin offers multiple methods for application data synchronization among devices using End-to-End Encryption, including various cloud services like Nextcloud, Dropbox, Microsoft's OneDrive, etc. **As Joplin Server is designed specifically for Joplin, it offers improved performance, compared to other synchronization targets.**
 
-While Joplin is architectured to be "offline first", with a Joplin Server it is able to not only synchronize data among devices but also [share a notebook](https://joplinapp.org/help/apps/share_notebook/) with users and [publish a note](https://joplinapp.org/help/apps/publish_note/) on the internet to share it with anyone.
+While Joplin is architectured to be "offline first", with a Joplin Server it is able to not only synchronize data among devices but also [share a notebook](https://sendapp.org/help/apps/share_notebook/) with users and [publish a note](https://sendapp.org/help/apps/publish_note/) on the internet to share it with anyone.
 
-See the project's [documentation](https://joplinapp.org/help/) to learn what Joplin and Joplin Server do and why they might be useful to you.
+See the project's [documentation](https://sendapp.org/help/) to learn what Joplin and Joplin Server do and why they might be useful to you.
 
 ## Adjusting the playbook configuration
 
@@ -60,10 +60,10 @@ send_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-If you wish to serve it under a prefix (`example.com/joplin`), you can do so by adding the following configuration to your `vars.yml` file (adapt to your needs).
+If you wish to serve it under a prefix (`example.com/send`), you can do so by adding the following configuration to your `vars.yml` file (adapt to your needs).
 
 ```yaml
-send_path_prefix: /joplin
+send_path_prefix: /send
 ```
 
 ### Configure the mailer
@@ -96,7 +96,7 @@ Take a look at:
 
 - [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `send_environment_variables_additional_variables` variable
 
-For a complete list of Joplin Server's config options that you could put in `send_environment_variables_additional_variables`, see its [environment variables](https://github.com/laurent22/joplin/blob/dev/packages/server/src/env.ts).
+For a complete list of Joplin Server's config options that you could put in `send_environment_variables_additional_variables`, see its [environment variables](https://github.com/laurent22/send/blob/dev/packages/server/src/env.ts).
 
 ## Installing
 
@@ -122,7 +122,7 @@ To configure and manage the Joplin Server, go to `example.com/login` specified w
 
 [<img src="../assets/send-login.png" title="Log in UI on Joplin Server" width="400">](../assets/send-login.png)
 
-For security reason, the developer recommends [here](https://github.com/laurent22/joplin/tree/dev/packages/server#create-a-user-for-sync) to create a non-admin user for synchronization. You can create one on the "Users" page. After creating, you can use the email and password you specified for the user to synchronize data with your Joplin clients.
+For security reason, the developer recommends [here](https://github.com/laurent22/send/tree/dev/packages/server#create-a-user-for-sync) to create a non-admin user for synchronization. You can create one on the "Users" page. After creating, you can use the email and password you specified for the user to synchronize data with your Joplin clients.
 
 [<img src="../assets/send-admin-users.png" title="User administration UI on Joplin Server" width="400">](../assets/send-admin-users.png)
 
@@ -130,13 +130,13 @@ For security reason, the developer recommends [here](https://github.com/laurent2
 
 ### Configure the client application
 
-ℹ️ *The instruction to download the client application is available at https://joplinapp.org/help/install/.*
+ℹ️ *The instruction to download the client application is available at https://sendapp.org/help/install/.*
 
-Open the configuration screen (see [the official documentation](https://joplinapp.org/help/apps/config_screen) about how to; it depends on which platform you are on), and select the "synchronisation" section.
+Open the configuration screen (see [the official documentation](https://sendapp.org/help/apps/config_screen) about how to; it depends on which platform you are on), and select the "synchronisation" section.
 
 In the list of synchronization targets, select "Joplin Server (Beta)". Enter the Joplin Server URL (`example.com`), your email and password for your account, and confirm them. You can also configure synchronization interval (default: 5 minutes). Before confirming, you can make sure the configuration by selecting "Check synchronisation configuration".
 
-[<img src="../assets/joplin-3.2.13.png" title="Synchronization configuration UI on Joplin 3.2.13 (AppImage)" width="400">](../assets/joplin-3.2.13.png)
+[<img src="../assets/send-3.2.13.png" title="Synchronization configuration UI on Joplin 3.2.13 (AppImage)" width="400">](../assets/send-3.2.13.png)
 
 ## Troubleshooting
 

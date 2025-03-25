@@ -35,5 +35,5 @@
     - name: Fail if send_container_labels_traefik_path_prefix ends with a slash
       ansible.builtin.fail:
         msg: >-
-          send_container_labels_traefik_path_prefix (`{{ send_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/joplin`).
+          send_container_labels_traefik_path_prefix (`{{ send_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/send`).
       when: "send_container_labels_traefik_path_prefix != '/' and send_container_labels_traefik_path_prefix[-1] == '/'"

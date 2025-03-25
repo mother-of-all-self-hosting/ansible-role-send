@@ -25,7 +25,7 @@ send_gid: ''
 send_hostname: ''
 
 # The path at which Joplin Server is exposed.
-# This value must either be `/` or not end with a slash (e.g. `/joplin`).
+# This value must either be `/` or not end with a slash (e.g. `/send`).
 send_path_prefix: /
 
 send_container_image: "{{ send_container_image_registry_prefix }}joplin/server:{{ send_container_image_tag }}"
@@ -57,7 +57,7 @@ send_container_additional_networks_custom: []
 send_container_labels_traefik_enabled: true
 send_container_labels_traefik_docker_network: "{{ send_container_network }}"
 send_container_labels_traefik_hostname: "{{ send_hostname }}"
-# The path prefix must either be `/` or not end with a slash (e.g. `/joplin`).
+# The path prefix must either be `/` or not end with a slash (e.g. `/send`).
 send_container_labels_traefik_path_prefix: "{{ send_path_prefix }}"
 send_container_labels_traefik_rule: "Host(`{{ send_container_labels_traefik_hostname }}`){% if send_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ send_container_labels_traefik_path_prefix }}`){% endif %}"
 send_container_labels_traefik_priority: 0
@@ -152,7 +152,7 @@ send_environment_variable_app_name: Joplin Server
 send_environment_variable_error_stack_traces_enabled: false
 #
 # The port number in the container
-# See: https://github.com/laurent22/joplin/tree/dev/packages/server#configure-docker-for-send
+# See: https://github.com/laurent22/send/tree/dev/packages/server#configure-docker-for-send
 send_environment_variable_http_port: 22300
 
 # env.j2: URL config
@@ -180,5 +180,5 @@ send_environment_variable_mailer_noreply_email: ''  # Email address of the sende
 send_environment_variable_mailer_security: MailerSecurity.Starttls
 
 # Additional environment variables.
-# See: phttps://github.com/laurent22/joplin/blob/dev/packages/server/src/env.ts
+# See: phttps://github.com/laurent22/send/blob/dev/packages/server/src/env.ts
 send_environment_variables_additional_variables: ''
