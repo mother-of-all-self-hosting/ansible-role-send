@@ -147,6 +147,12 @@ send_systemd_required_services_list_custom: []
 # List of systemd services that the Send systemd service wants
 send_systemd_wanted_services_list: []
 
+# Control storage backend options
+# Also see: https://github.com/timvisee/send/blob/master/docs/docker.md#storage-backend-options
+#
+# Valid values: localsystem (default), s3compatible, gcs
+send_storage_backend_option: localsystem
+
 # env.j2: Server configuration
 #
 # Set the HTTPS URL where traffic will be served
