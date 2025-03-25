@@ -178,6 +178,8 @@ To set a URL to the contact page for DMCA requests, add the following configurat
 send_environment_variable_send_footer_dmca_url: ''
 ```
 
+See [the section about usage](#takedown-illegal-materials) below to check how to takedown an illegal file from the service.
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the component.
@@ -215,6 +217,29 @@ ffsend download https://example.com/#url-to-the-uploaded-file
 ```
 
 See its [documentation](https://github.com/timvisee/ffsend/blob/master/README.md) for details about how to use the client.
+
+### Takedown illegal materials
+
+When a DMCA compliant was submitted or an abuse was detected, you need to remove the illegal material from the service. You can make the file inaccessible by following the steps below:
+
+1. Take a note of an ID of the file which needs to make inaccessible. The ID is contained in the URL. For example, if the URL is https://example.com/download/fa04ec7f8ce1bc05/#PhQ5XsSkKwcLfaODf9-K3B, the file ID is `fa04ec7f8ce1bc05`.
+2. Run a `DEL` command with the file ID from a host with access to the Redis server:
+
+   ```sh
+   redis-cli DEL fa04ec7f8ce1bc05
+   ```
+
+   If you run a Redis, KeyDB, or Valkey server on a Docker container along with the contaiener for Send on the same server, you can directly run the command with `docker exec`:
+
+   ```sh
+   docker exec -it YOUR_CONTAINER_FOR_REDIS_HERE sh -c "redis-cli DEL fa04ec7f8ce1bc05"
+   ```
+
+   Replace `YOUR_CONTAINER_FOR_REDIS_HERE` with the Docker container's name before running the command. For example, if you enable a [Valkey instance with the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/valkey.md) by the MASH project, it should be `mash-valkey` (if is a shared one) or `mash-send-valkey` (if it is a dedicated one).
+
+If the command returns `(integer) 1`, the record for the file has been removed, and the file has become inaccessible.
+
+Also see: https://github.com/timvisee/send/blob/master/docs/takedowns.md
 
 ## Troubleshooting
 
