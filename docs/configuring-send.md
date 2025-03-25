@@ -24,11 +24,17 @@ Send is a fork of Mozilla's discontinued [Firefox Send](https://github.com/mozil
 
 See the project's [documentation](https://github.com/timvisee/send/blob/master/README.md) to learn what Send does and why it might be useful to you.
 
+## Prerequisites
+
+To run a Send instance it is necessary to prepare a [Redis](https://redis.io/) server for managing a metadata database.
+
+If you are looking for an Ansible role for Redis, you can check out [this role (ansible-role-redis)](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. Note that the team recommends to have a look at [this role (ansible-role-valkey)](https://github.com/mother-of-all-self-hosting/ansible-role-valkey) for [Valkey](https://valkey.io/) instead.
+
 ## Adjusting the playbook configuration
 
 To enable Send with this role, add the following configuration to your `vars.yml` file.
 
-**Note**: the path should be something like `inventory/host_vars/mash.example.com/vars.yml` if you use the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting/mash-playbook) Ansible playbook.
+**Note**: the path should be something like `inventory/host_vars/mash.example.com/vars.yml` if you use the [MASH Ansible playbook](https://github.com/mother-of-all-self-hosting/mash-playbook).
 
 ```yaml
 ########################################################################
@@ -57,6 +63,42 @@ send_hostname: "example.com"
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
 **Note**: hosting Send under a subpath (by configuring the `send_path_prefix` variable) does not seem to be possible due to Send's technical limitations.
+
+### Configure upload and download limits (optional)
+
+You can configure settings for uploading and downloading limits by adding the following configuration to your `vars.yml` file (adapt to your needs):
+
+```yaml
+# Set maximum upload file size to 1 GB (default: 2 GB, 2147483648 in bytes)
+send_environment_variable_max_file_size: 1073741824
+
+# Set maximum upload expiry time to 3 days (default: 7 days, 604800 seconds)
+send_environment_variable_max_expire_seconds: 259200
+
+# Set maximum number of downloads to 10 (default: 20)
+send_environment_variable_max_downloads: 10
+
+# Comma separated list of expire time options to show in UI dropdown (default: 300, 3600, 86400, 604800)
+send_environment_variable_expire_times_seconds: 300, 3600, 86400, 172800
+
+# Comma separated list of download limit options to show in UI dropdown (default: 1, 2, 3, 4, 5, 20)
+send_environment_variable_download_counts: 1, 2, 3, 4, 5, 10
+```
+
+> [!NOTE]
+>
+> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA.
+
+> Long expiration times are risky on public servers as people may use you as free hosting for copyrighted content or malware (which is why Mozilla shut down their send service). It's advised to only expose your service on a LAN/intranet, password protect it with a proxy/gateway, or make sure to set SEND_FOOTER_DMCA_URL above so you can respond to takedown requests.
+
+<small>Source: [Docker Quickstart](https://github.com/timvisee/send/blob/5124572dba7cac073d85f3e277d647aa3433ea38/docs/docker.md#environment-variables)</small>
+
+To set a URL to the contact page for DMCA requests, add the following configuration to your `vars.yml` file (adapt to your needs):
+
+```yaml
+# default: empty
+send_environment_variable_send_footer_dmca_url: ''
+```
 
 ### Extending the configuration
 
