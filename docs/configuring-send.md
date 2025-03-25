@@ -64,6 +64,20 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 **Note**: hosting Send under a subpath (by configuring the `send_path_prefix` variable) does not seem to be possible due to Send's technical limitations.
 
+### Set variables for connecting to a Redis server
+
+As described above, it is necessary to set up a [Redis](https://redis.io/) server for managing a metadata database of a Send instance. You can use either KeyDB or Valkey alternatively.
+
+Having configured it, you need to add and adjust the following configuration to your `vars.yml` file, so that  the Send instance will connect to the server:
+
+```yaml
+send_environment_variable_redis_host: localhost
+send_environment_variable_redis_port: 6379
+send_environment_variable_redis_user: ''
+send_environment_variable_redis_password: ''
+send_environment_variable_redis_db: ''
+```
+
 ### Configure upload and download limits (optional)
 
 You can configure settings for uploading and downloading limits by adding the following configuration to your `vars.yml` file (adapt to your needs):
