@@ -11,7 +11,7 @@
 
 joplin_server_enabled: true
 
-joplin_server_identifier: joplin-server
+joplin_server_identifier: send
 joplin_server_base_path: "{{ joplin_server_identifier }}"
 
 # There are version tags, but use "latest" for now, as it contains some
@@ -152,7 +152,7 @@ joplin_server_environment_variable_app_name: Joplin Server
 joplin_server_environment_variable_error_stack_traces_enabled: false
 #
 # The port number in the container
-# See: https://github.com/laurent22/joplin/tree/dev/packages/server#configure-docker-for-joplin-server
+# See: https://github.com/laurent22/joplin/tree/dev/packages/server#configure-docker-for-send
 joplin_server_environment_variable_http_port: 22300
 
 # env.j2: URL config
@@ -161,9 +161,9 @@ joplin_server_environment_variable_base_url: "https://{{ joplin_server_hostname 
 # env.j2: Database config
 joplin_server_environment_variable_database_host: ''
 joplin_server_environment_variable_database_port: 5432
-joplin_server_environment_variable_database_user: 'joplin-server'
+joplin_server_environment_variable_database_user: 'send'
 joplin_server_environment_variable_database_password: 'some-password'
-joplin_server_environment_variable_database_name: 'joplin-server'
+joplin_server_environment_variable_database_name: 'send'
 joplin_server_environment_variable_database_connection_string: 'postgres://{{ joplin_server_environment_variable_database_user }}:{{ joplin_server_environment_variable_database_password }}@{{ joplin_server_environment_variable_database_host }}:{{ joplin_server_environment_variable_database_port }}/{{ joplin_server_environment_variable_database_name }}'
 
 # env.j2: Mailer config

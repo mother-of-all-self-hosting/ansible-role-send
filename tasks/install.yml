@@ -42,6 +42,6 @@
 
 - name: Ensure Joplin Server systemd service is present
   ansible.builtin.template:
-    src: "{{ role_path }}/templates/systemd/joplin-server.service.j2"
+    src: "{{ role_path }}/templates/systemd/send.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ joplin_server_identifier }}.service"
     mode: "0644"

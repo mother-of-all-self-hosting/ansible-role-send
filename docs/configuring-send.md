@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up Joplin Server
 
-This is an [Ansible](https://www.ansible.com/) role which installs [Joplin Server](https://joplinapp.org/help/dev/spec/architecture#joplin-server) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [Joplin Server](https://joplinapp.org/help/dev/spec/architecture#send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
 Joplin Server is a self-hosted server component for [Joplin](https://joplinapp.org/) — a privacy-focused note taking and to-do application, which can handle a large number of notes organized into notebooks. Joplin is available on Desktop (Windows, macOS, and Linux) and mobile (Android and iOS). There is a [CLI application](https://joplinapp.org/help/install/#terminal-application) as well.
 
@@ -37,7 +37,7 @@ To enable a Joplin Server with this role, add the following configuration to you
 ```yaml
 ########################################################################
 #                                                                      #
-# joplin-server                                                        #
+# send                                                                 #
 #                                                                      #
 ########################################################################
 
@@ -45,7 +45,7 @@ joplin_server_enabled: true
 
 ########################################################################
 #                                                                      #
-# joplin-server                                                        #
+# send                                                                 #
 #                                                                      #
 ########################################################################
 ```
@@ -120,13 +120,13 @@ If it works properly, the command should return a message like this: `{"status":
 
 To configure and manage the Joplin Server, go to `example.com/login` specified with `joplin_server_hostname`, enter the admin credentials (email address: `admin@localhost`, password: `admin`) to log in. **After logging in, make sure to change the credentials.**
 
-[<img src="../assets/joplin-server-login.png" title="Log in UI on Joplin Server" width="400">](../assets/joplin-server-login.png)
+[<img src="../assets/send-login.png" title="Log in UI on Joplin Server" width="400">](../assets/send-login.png)
 
 For security reason, the developer recommends [here](https://github.com/laurent22/joplin/tree/dev/packages/server#create-a-user-for-sync) to create a non-admin user for synchronization. You can create one on the "Users" page. After creating, you can use the email and password you specified for the user to synchronize data with your Joplin clients.
 
-[<img src="../assets/joplin-server-admin-users.png" title="User administration UI on Joplin Server" width="400">](../assets/joplin-server-admin-users.png)
+[<img src="../assets/send-admin-users.png" title="User administration UI on Joplin Server" width="400">](../assets/send-admin-users.png)
 
-[<img src="../assets/joplin-server-add-user.png" title="Adding user UI on Joplin Server" width="400">](../assets/joplin-server-add-user.png)
+[<img src="../assets/send-add-user.png" title="Adding user UI on Joplin Server" width="400">](../assets/send-add-user.png)
 
 ### Configure the client application
 
@@ -142,7 +142,7 @@ In the list of synchronization targets, select "Joplin Server (Beta)". Enter the
 
 ### Check the service's logs
 
-You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu joplin-server` (or how you/your playbook named the service, e.g. `mash-joplin-server`).
+You can find the logs in [systemd-journald](https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html) by logging in to the server with SSH and running `journalctl -fu send` (or how you/your playbook named the service, e.g. `mash-send`).
 
 #### Enable stack traces
 
