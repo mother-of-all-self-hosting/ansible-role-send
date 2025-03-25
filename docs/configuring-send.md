@@ -79,10 +79,10 @@ send_environment_variable_max_expire_seconds: 259200
 send_environment_variable_max_downloads: 10
 
 # Comma separated list of expire time options to show in UI dropdown (default: 300, 3600, 86400, 604800)
-send_environment_variable_expire_times_seconds: 300, 3600, 86400, 172800
+send_environment_variable_expire_times_seconds: 300, 3600, 86400, {{ send_environment_variable_max_expire_seconds }}
 
 # Comma separated list of download limit options to show in UI dropdown (default: 1, 2, 3, 4, 5, 20)
-send_environment_variable_download_counts: 1, 2, 3, 4, 5, 10
+send_environment_variable_download_counts: 1, 2, 3, 4, 5, {{ send_environment_variable_max_downloads }}
 ```
 
 > [!NOTE]

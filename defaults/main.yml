@@ -190,9 +190,9 @@ send_environment_variable_max_expire_seconds: 604800
 # Set the maximum number of downloads
 send_environment_variable_max_downloads: 20
 # Set expiration time options to show on UI dropdown
-send_environment_variable_expire_times_seconds: 300, 3600, 86400, 604800
+send_environment_variable_expire_times_seconds: 300, 3600, 86400, {{ send_environment_variable_max_expire_seconds }}
 # Set download limit options to show on UI dropdown
-send_environment_variable_download_counts: 1, 2, 3, 4, 5, 20
+send_environment_variable_download_counts: 1, 2, 3, 4, 5, {{ send_environment_variable_max_downloads }}
 # Set the default download limit displayed on UI
 send_environment_variable_default_downloads: '1'
 # Set the default expiration time displayed on UI
