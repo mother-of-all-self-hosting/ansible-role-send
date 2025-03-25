@@ -33,7 +33,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --read-only \
       --network={{ send_container_network }} \
       {% if send_container_http_host_bind_port %}
-      -p {{ send_container_http_host_bind_port }}:1443 \
+      -p {{ send_container_http_host_bind_port }}:{{ send_environment_variable_port }} \
       {% endif %}
       --env-file={{ send_base_path }}/env \
       --label-file={{ send_base_path }}/labels \
