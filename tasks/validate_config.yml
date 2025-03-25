@@ -15,7 +15,6 @@
     - send_gid
     - send_hostname
     - send_path_prefix
-    - send_environment_variable_database_host
     - send_container_network
 
 - when: send_container_labels_traefik_enabled | bool
