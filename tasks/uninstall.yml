@@ -7,24 +7,24 @@
 
 - name: Check existence of Joplin Server systemd service
   ansible.builtin.stat:
-    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ joplin_server_identifier }}.service"
-  register: joplin_server_service_stat
+    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ send_identifier }}.service"
+  register: send_service_stat
 
-- when: joplin_server_service_stat.stat.exists | bool
+- when: send_service_stat.stat.exists | bool
   block:
     - name: Ensure Joplin Server systemd service is stopped
       ansible.builtin.service:
-        name: "{{ joplin_server_identifier }}"
+        name: "{{ send_identifier }}"
         state: stopped
         enabled: false
         daemon_reload: true
 
     - name: Ensure Joplin Server systemd service doesn't exist
       ansible.builtin.file:
-        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ joplin_server_identifier }}.service"
+        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ send_identifier }}.service"
         state: absent
 
     - name: Ensure Joplin Server base directory doesn't exist
       ansible.builtin.file:
-        path: "{{ joplin_server_base_path }}"
+        path: "{{ send_base_path }}"
         state: absent

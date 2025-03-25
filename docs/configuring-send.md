@@ -41,7 +41,7 @@ To enable a Joplin Server with this role, add the following configuration to you
 #                                                                      #
 ########################################################################
 
-joplin_server_enabled: true
+send_enabled: true
 
 ########################################################################
 #                                                                      #
@@ -55,7 +55,7 @@ joplin_server_enabled: true
 To enable the Joplin Server you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
-joplin_server_hostname: "example.com"
+send_hostname: "example.com"
 ```
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
@@ -63,7 +63,7 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 If you wish to serve it under a prefix (`example.com/joplin`), you can do so by adding the following configuration to your `vars.yml` file (adapt to your needs).
 
 ```yaml
-joplin_server_path_prefix: /joplin
+send_path_prefix: /joplin
 ```
 
 ### Configure the mailer
@@ -73,17 +73,17 @@ During installation, the Joplin Server by default creates its admin user with `a
 To enable email address authentication, you can configure the mailer by adding the following configuration to your `vars.yml` file (adapt to your needs):
 
 ```yaml
-joplin_server_environment_variable_mailer_enabled: true
-joplin_server_environment_variable_mailer_host: ''  # Hostname
-joplin_server_environment_variable_mailer_port: 587
-joplin_server_environment_variable_mailer_user: ''  # Username of the SMTP user
-joplin_server_environment_variable_mailer_password: ''  # Password of the SMTP user
-joplin_server_environment_variable_mailer_noreply_name: ''
-joplin_server_environment_variable_mailer_noreply_email: ''  # Email address of the sender
+send_environment_variable_mailer_enabled: true
+send_environment_variable_mailer_host: ''  # Hostname
+send_environment_variable_mailer_port: 587
+send_environment_variable_mailer_user: ''  # Username of the SMTP user
+send_environment_variable_mailer_password: ''  # Password of the SMTP user
+send_environment_variable_mailer_noreply_name: ''
+send_environment_variable_mailer_noreply_email: ''  # Email address of the sender
 
 # Controls the `MAILER_SECURITY` environment variable
 # Valid values: MailerSecurity.Starttls, MailerSecurity.Tls, MailerSecurity.None
-joplin_server_environment_variable_mailer_security: MailerSecurity.Starttls
+send_environment_variable_mailer_security: MailerSecurity.Starttls
 ```
 
 ⚠️ **Note**: without setting an authentication method such as DKIM, SPF, and DMARC for your hostname, emails are most likely to be quarantined as spam at recipient's mail servers. If you have set up a mail server with the [MASH project's exim-relay Ansible role](https://github.com/mother-of-all-self-hosting/ansible-role-exim-relay), you can enable DKIM signing with it. Refer [its documentation](https://github.com/mother-of-all-self-hosting/ansible-role-exim-relay/blob/main/docs/configuring-exim-relay.md#enable-dkim-support-optional) for details.
@@ -94,9 +94,9 @@ There are some additional things you may wish to configure about the component.
 
 Take a look at:
 
-- [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `joplin_server_environment_variables_additional_variables` variable
+- [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `send_environment_variables_additional_variables` variable
 
-For a complete list of Joplin Server's config options that you could put in `joplin_server_environment_variables_additional_variables`, see its [environment variables](https://github.com/laurent22/joplin/blob/dev/packages/server/src/env.ts).
+For a complete list of Joplin Server's config options that you could put in `send_environment_variables_additional_variables`, see its [environment variables](https://github.com/laurent22/joplin/blob/dev/packages/server/src/env.ts).
 
 ## Installing
 
@@ -118,7 +118,7 @@ If it works properly, the command should return a message like this: `{"status":
 
 ## Usage
 
-To configure and manage the Joplin Server, go to `example.com/login` specified with `joplin_server_hostname`, enter the admin credentials (email address: `admin@localhost`, password: `admin`) to log in. **After logging in, make sure to change the credentials.**
+To configure and manage the Joplin Server, go to `example.com/login` specified with `send_hostname`, enter the admin credentials (email address: `admin@localhost`, password: `admin`) to log in. **After logging in, make sure to change the credentials.**
 
 [<img src="../assets/send-login.png" title="Log in UI on Joplin Server" width="400">](../assets/send-login.png)
 
@@ -149,5 +149,5 @@ You can find the logs in [systemd-journald](https://www.freedesktop.org/software
 If you want to enable error stack traces, add the following configuration to your `vars.yml` file and re-run the playbook:
 
 ```yaml
-joplin_server_environment_variable_error_stack_traces_enabled: true
+send_environment_variable_error_stack_traces_enabled: true
 ```
