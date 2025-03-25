@@ -26,6 +26,9 @@ send_hostname: ''
 
 # The path at which Send is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/send`).
+#
+# Hosting Send under a subpath does not seem to be possible due to Send's
+# technical limitations.
 send_path_prefix: /
 
 send_container_image: "{{ send_container_image_registry_prefix }}timvisee/send:{{ send_container_image_tag }}"

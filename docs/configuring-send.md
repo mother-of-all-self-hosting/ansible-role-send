@@ -54,11 +54,7 @@ send_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-If you wish to serve it under a prefix (`example.com/send`), you can do so by adding the following configuration to your `vars.yml` file (adapt to your needs).
-
-```yaml
-send_path_prefix: /send
-```
+**Note**: hosting Send under a subpath (by configuring the `send_path_prefix` variable) does not seem to be possible due to Send's technical limitations.
 
 ### Extending the configuration
 
