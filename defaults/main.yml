@@ -147,37 +147,62 @@ send_systemd_required_services_list_custom: []
 # List of systemd services that the Send systemd service wants
 send_systemd_wanted_services_list: []
 
-# env.j2: General config
-send_environment_variable_app_name: Send
-send_environment_variable_error_stack_traces_enabled: false
+# Server configuration
 #
-# The port number in the container
-# See: https://github.com/laurent22/send/tree/dev/packages/server#configure-docker-for-send
-send_environment_variable_http_port: 22300
+# Set the HTTPS URL where traffic will be served (e.g. `https://send.firefox.com`)
+send_environment_variable_base_url: ''
+# Control whether the base URL is detected automatically using browser if `BASE_URL` is unset (defaults to `false`)
+send_environment_variable_detect_base_url: ''
+# Set the port number on which the server will listen (defaults to `1443`)
+send_environment_variable_port: ''
+# Control whether Send is run in `development` mode (unsafe) or `production` mode (the default)
+send_environment_variable_node_env: ''
+# Set a URL to a contact page for DMCA requests (empty / not shown by default)
+send_environment_variable_send_footer_dmca_url: ''
+# Set a Sentry Client ID and DSN for error tracking (optional, disabled by default)
+send_environment_variable_sentry_client: ''
+send_environment_variable_sentry_dsn: ''
 
-# env.j2: URL config
-send_environment_variable_base_url: "https://{{ send_hostname }}{{ '' if send_path_prefix == '/' else send_path_prefix }}"
-
-# env.j2: Database config
-send_environment_variable_database_host: ''
-send_environment_variable_database_port: 5432
-send_environment_variable_database_user: 'send'
-send_environment_variable_database_password: 'some-password'
-send_environment_variable_database_name: 'send'
-send_environment_variable_database_connection_string: 'postgres://{{ send_environment_variable_database_user }}:{{ send_environment_variable_database_password }}@{{ send_environment_variable_database_host }}:{{ send_environment_variable_database_port }}/{{ send_environment_variable_database_name }}'
-
-# env.j2: Mailer config
-send_environment_variable_mailer_enabled: false
-send_environment_variable_mailer_host: ''  # Hostname
-send_environment_variable_mailer_port: 587
-send_environment_variable_mailer_user: ''  # Username of the SMTP user
-send_environment_variable_mailer_password: ''  # Password of the SMTP user
-send_environment_variable_mailer_noreply_name: ''
-send_environment_variable_mailer_noreply_email: ''  # Email address of the sender
+# Upload and Download Limits
 #
-# Controls the `MAILER_SECURITY` environment variable
-# Valid values: MailerSecurity.Starttls, MailerSecurity.Tls, MailerSecurity.None
-send_environment_variable_mailer_security: MailerSecurity.Starttls
+# Set the maximum upload file size in bytes (defaults to `2147483648` aka 2GB)
+send_environment_variable_max_file_size: ''
+# Set the maximum number of files per archive (defaults to `64`)
+send_environment_variable_max_files_per_archive: ''
+# Set the maximum upload expiry time in seconds (defaults to `604800` = 7 days)
+send_environment_variable_max_expire_seconds: ''
+# Set the maximum number of downloads (defaults to `100`)
+send_environment_variable_max_downloads: ''
+# Set expiration time options to show on UI dropdown, e.g. `3600,86400,604800,2592000,31536000`
+send_environment_variable_expire_times_seconds: ''
+# Set download limit options to show on UI dropdown, e.g. `10,1,2,5,10,15,25,50,100,1000`
+send_environment_variable_download_counts: ''
+# Set the default download limit displayed on UI (defaults to `1`)
+send_environment_variable_default_downloads: ''
+# Set the default expiration time displayed on UI (defaults to `86400`)
+send_environment_variable_default_expire_seconds: ''
+
+# Storage Backend Options
+# Set a hostname, port, and pass of the Redis, KeyDB, or Valkey server (defaults to `localhost`, `6379`, and no password)
+send_environment_variable_redis_host: ''
+send_environment_variable_redis_port: ''
+send_environment_variable_redis_user: ''
+send_environment_variable_redis_password: ''
+send_environment_variable_redis_db: ''
+# Set a directory for storage inside the Docker container (defaults to `/uploads`)
+send_environment_variable_file_dir: ''
+# Set a S3 bucket name to use (only set if using S3 for storage)
+send_environment_variable_S3_bucket: ''
+# Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
+send_environment_variable_S3_endpoint: ''
+# Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects (defaults to `false`)
+send_environment_variable_S3_use_path_style_endpoint: ''
+# Set a S3 access key ID (only set if using S3 for storage)
+send_environment_variable_aws_access_key_id: ''
+# Set a S3 secret access key ID (only set if using S3 for storage)
+send_environment_variable_aws_secret_access_key: ''
+# Set a Google Cloud Storage bucket (only set if using GCP for storage)
+send_environment_variable_gcs_bucket: ''
 
 # Additional environment variables.
 # See: phttps://github.com/laurent22/send/blob/dev/packages/server/src/env.ts
