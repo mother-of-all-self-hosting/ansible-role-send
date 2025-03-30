@@ -24,6 +24,9 @@ send_gid: ''
 # The hostname at which Send is served.
 send_hostname: ''
 
+# Specify URI scheme for send_environment_variable_base_url.
+send_scheme: https
+
 # The path at which Send is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/send`).
 #
@@ -166,7 +169,7 @@ send_storage_backend_option: localsystem
 # env.j2: Server configuration
 #
 # Set the HTTPS URL where traffic will be served
-send_environment_variable_base_url: https://{{ send_hostname }}
+send_environment_variable_base_url: "{{ send_scheme }}://{{ send_hostname }}"
 # Control whether the base URL is detected automatically using browser if send_environment_variable_base_url is unset
 send_environment_variable_detect_base_url: false
 # Set the port number on which the server will listen
