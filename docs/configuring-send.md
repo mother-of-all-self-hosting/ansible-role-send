@@ -198,7 +198,7 @@ After configuring the playbook, run the installation command of your playbook as
 ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,start
 ```
 
-If you use the MASH playbook, the shortcut commands with the [`just` program](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/just.md) are also available: `just install-all` or `just setup-all`
+If you use the MASH playbook, the shortcut commands with the [`just` program](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/just.md) are also available: `just install-all` or `just setup-all`
 
 ## Usage
 
