@@ -68,7 +68,7 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 As described above, it is necessary to set up a [Redis](https://redis.io/) server for managing a metadata database of a Send instance. You can use either KeyDB or Valkey alternatively.
 
-Having configured it, you need to add and adjust the following configuration to your `vars.yml` file, so that  the Send instance will connect to the server:
+Having configured it, you need to add and adjust the following configuration to your `vars.yml` file, so that the Send instance will connect to the server:
 
 ```yaml
 send_environment_variable_redis_host: YOUR_REDIS_SERVER_HOSTNAME_HERE
