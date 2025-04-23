@@ -14,9 +14,8 @@ send_enabled: true
 send_identifier: send
 send_base_path: "{{ send_identifier }}"
 
-# There are version tags, but use "latest" for now, as it contains some
-# fixes which are yet to be released for tagged images.
-send_version: latest
+# Contaiers are available at https://gitlab.com/timvisee/send/container_registry/1418504
+send_version: v3.4.24
 
 send_uid: ''
 send_gid: ''
