@@ -12,7 +12,7 @@
 send_enabled: true
 
 send_identifier: send
-send_base_path: "{{ send_identifier }}"
+send_base_path: "/{{ send_identifier }}"
 
 # Contaiers are available at https://gitlab.com/timvisee/send/container_registry/1418504
 send_version: v3.4.25
