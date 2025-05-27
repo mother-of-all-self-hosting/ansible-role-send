@@ -114,13 +114,13 @@ To use Amazon S3 or a S3 compatible object storage, add the following configurat
 send_storage_backend_option: s3compatible
 
 # Set a S3 bucket name to use
-send_environment_variable_S3_bucket: ''
+send_environment_variable_s3_bucket: ''
 
 # Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
-# send_environment_variable_S3_endpoint: ''
+# send_environment_variable_s3_endpoint: ''
 
 # Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects
-send_environment_variable_S3_use_path_style_endpoint: false
+send_environment_variable_s3_use_path_style_endpoint: false
 
 # Set a S3 access key ID
 send_environment_variable_aws_access_key_id: ''
@@ -163,13 +163,8 @@ send_environment_variable_expire_times_seconds: 300, 3600, 86400, {{ send_enviro
 send_environment_variable_download_counts: 1, 2, 3, 4, 5, {{ send_environment_variable_max_downloads }}
 ```
 
-> [!NOTE]
->
-> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA.
-
-> Long expiration times are risky on public servers as people may use you as free hosting for copyrighted content or malware (which is why Mozilla shut down their send service). It's advised to only expose your service on a LAN/intranet, password protect it with a proxy/gateway, or make sure to set SEND_FOOTER_DMCA_URL above so you can respond to takedown requests.
-
-<small>Source: [Docker Quickstart](https://github.com/timvisee/send/blob/5124572dba7cac073d85f3e277d647aa3433ea38/docs/docker.md#environment-variables)</small>
+>[!NOTE]
+> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA. See [this section](https://github.com/timvisee/send/blob/5124572dba7cac073d85f3e277d647aa3433ea38/docs/docker.md#environment-variables) on the official documentation for details.
 
 To set a URL to the contact page for DMCA requests, add the following configuration to your `vars.yml` file (adapt to your needs):
 
@@ -222,7 +217,7 @@ See its [documentation](https://github.com/timvisee/ffsend/blob/master/README.md
 
 When a DMCA compliant was submitted or an abuse was detected, you need to remove the illegal material from the service. You can make the file inaccessible by following the steps below:
 
-1. Take a note of an ID of the file which needs to make inaccessible. The ID is contained in the URL. For example, if the URL is https://example.com/download/fa04ec7f8ce1bc05/#PhQ5XsSkKwcLfaODf9-K3B, the file ID is `fa04ec7f8ce1bc05`.
+1. Take a note of an ID of the file which needs to make inaccessible. The ID is contained in the URL. For example, if the URL is [https://example.com/download/fa04ec7f8ce1bc05/#PhQ5XsSkKwcLfaODf9-K3B](https://example.com/download/fa04ec7f8ce1bc05/#PhQ5XsSkKwcLfaODf9-K3B), the file ID is `fa04ec7f8ce1bc05`.
 2. Run a `DEL` command with the file ID from a host with access to the Redis server:
 
    ```sh
@@ -239,7 +234,7 @@ When a DMCA compliant was submitted or an abuse was detected, you need to remove
 
 If the command returns `(integer) 1`, the record for the file has been removed, and the file has become inaccessible.
 
-Also see: https://github.com/timvisee/send/blob/master/docs/takedowns.md
+Also see: [https://github.com/timvisee/send/blob/master/docs/takedowns.md](https://github.com/timvisee/send/blob/master/docs/takedowns.md)
 
 ## Troubleshooting
 

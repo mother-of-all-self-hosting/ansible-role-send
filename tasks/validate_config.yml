@@ -4,6 +4,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
+- name: (Deprecation) Catch and report renamed settings
+  ansible.builtin.fail:
+    msg: >-
+      Your configuration contains a variable, which now has a different name.
+      Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
+  when: "item.old in vars"
+  with_items:
+    - { 'old': 'send_environment_variable_S3_bucket', 'new': 'send_environment_variable_s3_bucket' }
+    - { 'old': 'send_environment_variable_S3_endpoint', 'new': 'send_environment_variable_s3_endpoint' }
+    - { 'old': 'send_environment_variable_S3_use_path_style_endpoint', 'new': 'send_environment_variable_s3_use_path_style_endpoint' }
 
 - name: Fail if required Send settings not defined
   ansible.builtin.fail:
@@ -18,7 +28,8 @@
     - send_container_network
     - send_environment_variable_redis_host
 
-- when: send_container_labels_traefik_enabled | bool
+- name: Run if Traefik is enabled
+  when: send_container_labels_traefik_enabled | bool
   block:
     - name: Fail if required Send Traefik settings not defined
       ansible.builtin.fail:

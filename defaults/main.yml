@@ -212,11 +212,11 @@ send_environment_variable_redis_db: ''
 # Set a directory for storage inside the Docker container
 send_environment_variable_file_dir: /uploads
 # Set a S3 bucket name to use
-send_environment_variable_S3_bucket: ''
+send_environment_variable_s3_bucket: ''
 # Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
-send_environment_variable_S3_endpoint: ''
+send_environment_variable_s3_endpoint: ''
 # Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects
-send_environment_variable_S3_use_path_style_endpoint: false
+send_environment_variable_s3_use_path_style_endpoint: false
 # Set a S3 access key ID
 send_environment_variable_aws_access_key_id: ''
 # Set a S3 secret access key ID
