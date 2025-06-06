@@ -5,6 +5,7 @@
 
 ---
 - name: Perform Send installation tasks
+  when: send_enabled | bool
   tags:
     - setup-all
     - setup-send
@@ -12,17 +13,15 @@
     - install-send
   block:
     - name: Validate Send configuration
-      when: send_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
     - name: Install Send
-      when: send_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform Send uninstallation tasks
+  when: not send_enabled | bool
   tags:
     - setup-all
     - setup-send
   block:
     - name: Uninstall Send
-      when: not send_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
