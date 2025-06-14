@@ -42,10 +42,10 @@ send_container_image_registry_prefix_upstream_default: registry.gitlab.com/
 send_container_image_force_pull: "{{ send_container_image.endswith(':latest') }}"
 
 send_container_image_self_build: false
-send_container_image_name: "timvisee/send:{{ send_container_repo_version }}"
-send_container_repo: "https://github.com/timvisee/send.git"
-send_container_repo_version: "{{ send_version if send_version != 'latest' else 'main' }}"
-send_container_src_files_path: "{{ send_base_path }}/docker-src"
+send_container_image_self_build_name: "timvisee/send:{{ send_container_image_self_build_repo_version }}"
+send_container_image_self_build_repo: "https://github.com/timvisee/send.git"
+send_container_image_self_build_repo_version: "{{ send_version if send_version != 'latest' else 'main' }}"
+send_container_image_self_build_src_files_path: "{{ send_base_path }}/docker-src"
 
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #

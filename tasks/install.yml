@@ -55,21 +55,21 @@
   block:
     - name: Ensure Send repository is present on self-build
       ansible.builtin.git:
-        repo: "{{ send_container_repo }}"
-        version: "{{ send_container_repo_version }}"
-        dest: "{{ send_container_src_files_path }}"
+        repo: "{{ send_container_image_self_build_repo }}"
+        version: "{{ send_container_image_self_build_repo_version }}"
+        dest: "{{ send_container_image_self_build_src_files_path }}"
         force: "yes"
       register: send_git_pull_results
 
     - name: Ensure Send container image is built
       community.docker.docker_image:
-        name: "{{ send_container_image_name }}"
+        name: "{{ send_container_image_self_build_name }}"
         source: build
         force_source: "{{ send_git_pull_results.changed if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
         force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else send_git_pull_results.changed }}"
         build:
           dockerfile: Dockerfile
-          path: "{{ send_container_src_files_path }}"
+          path: "{{ send_container_image_self_build_src_files_path }}"
           pull: true
           args:
 
