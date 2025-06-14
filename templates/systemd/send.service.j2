@@ -42,7 +42,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% for arg in send_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}
-      {{ send_container_image }}
+      {{ send_container_image_self_build_name if send_container_image_self_build else send_container_image }}
 
 {% for network in send_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ send_identifier }}
