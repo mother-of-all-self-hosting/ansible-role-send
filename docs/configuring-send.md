@@ -183,7 +183,7 @@ Take a look at:
 
 - [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `send_environment_variables_additional_variables` variable
 
-For a complete list of Send's config options that you could put in `send_environment_variables_additional_variables`, see its [environment variables](https://github.com/timvisee/send/blob/master/docs/docker.md#environment-variables).
+See its [environment variables](https://github.com/timvisee/send/blob/master/docs/docker.md#environment-variables) for a complete list of Send's config options that you could put in `send_environment_variables_additional_variables`.
 
 ## Installing
 
