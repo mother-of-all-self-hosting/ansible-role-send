@@ -36,6 +36,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% endif %}
       --env-file={{ send_base_path }}/env \
       --label-file={{ send_base_path }}/labels \
+      {% if send_container_additional_volumes | length == 0 %}
+      --mount type=bind,src={{ send_data_path }},dst={{ send_environment_variable_file_dir }} \
+      {% endif %}
       {% for volume in send_container_additional_volumes %}
       --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options else '' }} \
       {% endfor %}

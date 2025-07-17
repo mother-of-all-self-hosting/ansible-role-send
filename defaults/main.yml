@@ -13,6 +13,7 @@ send_enabled: true
 
 send_identifier: send
 send_base_path: "/{{ send_identifier }}"
+send_data_path: "{{ send_base_path }}/data"
 
 # Contaiers are available at https://gitlab.com/timvisee/send/container_registry/1418504
 # renovate: datasource=docker depName=registry.gitlab.com/timvisee/send

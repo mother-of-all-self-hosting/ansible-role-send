@@ -84,28 +84,6 @@ Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with the hostname of your
 
 The service provides these storage backend options: local filesystem (default), Amazon S3 compatible object storage, and Google Cloud Storage.
 
-#### Local filesystem (default)
-
-With the default configuration, the directory for storing files inside the Docker container is set to `/uploads`. You can change it by adding and adjusting the following configuration to your `vars.yml` file:
-
-```yaml
-send_environment_variable_file_dir: YOUR_DIRECTORY_HERE
-```
-
-**By default this role removes uploaded files when uninstalling the service**. In order to make those files persistent, you need to add a Docker volume to mount in the container, so that the directory for storing files is shared with the host machine.
-
-To add the volume, prepare a directory on the host machine and add the following configuration to your `vars.yml` file, setting the directory path to `src`:
-
-```yaml
-send_container_additional_volumes:
-  - type: bind
-    src: /path/on/the/host
-    dst: "{{ send_environment_variable_file_dir }}"
-    options:
-```
-
-Make sure permissions of the directory specified to `src` (`/path/on/the/host`).
-
 #### Amazon S3 compatible object storage
 
 To use Amazon S3 or a S3 compatible object storage, add the following configuration to your `vars.yml` file (adapt to your needs):

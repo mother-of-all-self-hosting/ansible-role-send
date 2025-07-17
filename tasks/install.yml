@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Ensure Send path exists
+- name: Ensure Send paths exist
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -13,6 +13,7 @@
     group: "{{ send_gid }}"
   with_items:
     - "{{ send_base_path }}"
+    - "{{ send_data_path }}"
 
 - name: Ensure Send support files installed
   ansible.builtin.template:
