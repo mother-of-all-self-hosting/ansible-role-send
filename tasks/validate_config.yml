@@ -9,7 +9,7 @@
     msg: >-
       Your configuration contains a variable, which now has a different name.
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
-  when: "item.old in vars"
+  when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
   with_items:
     - { 'old': 'send_environment_variable_S3_bucket', 'new': 'send_environment_variable_s3_bucket' }
     - { 'old': 'send_environment_variable_S3_endpoint', 'new': 'send_environment_variable_s3_endpoint' }
