@@ -24,12 +24,6 @@
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ send_identifier }}.service"
         state: absent
 
-    - name: Ensure Send container network does not exist via community.docker.docker_network
-      when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
-      community.docker.docker_network:
-        name: "{{ send_container_network }}"
-        state: absent
-
     - name: Ensure Send support files do not exist
       ansible.builtin.file:
         path: "{{ send_base_path }}/{{ item }}"
@@ -37,6 +31,17 @@
       with_items:
         - env
         - labels
+
+    - name: Ensure Send image source files path does not exist
+      ansible.builtin.file:
+        path: "{{ send_container_image_self_build_src_files_path }}"
+        state: absent
+
+    - name: Ensure Send container network does not exist via community.docker.docker_network
+      when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
+      community.docker.docker_network:
+        name: "{{ send_container_network }}"
+        state: absent
 
     - name: Ensure Send container network does not exist via ansible.builtin.command
       when: devture_systemd_docker_base_container_network_creation_method == 'command'
