@@ -66,6 +66,6 @@
         devture_playbook_runtime_messages_list | default([])
         +
         [
-          "Note: As the local Send instance has been removed, some old data remains in `{{ send_data_path }}`. Feel free to delete it."
+          "Note: As the local Send instance has been removed, some old data remains in `" + send_data_path + "`. Feel free to delete it."
         ]
       }}
