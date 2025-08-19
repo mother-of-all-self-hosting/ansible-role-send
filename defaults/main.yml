@@ -219,7 +219,7 @@ send_environment_variable_default_expire_seconds: '86400'
 # env.j2: Storage Backend Options
 #
 # Set a hostname, port, and pass of the Redis, KeyDB, or Valkey server
-send_environment_variable_redis_host: ''
+send_environment_variable_redis_hostname: ''
 send_environment_variable_redis_port: 6379
 send_environment_variable_redis_user: ''
 send_environment_variable_redis_password: ''

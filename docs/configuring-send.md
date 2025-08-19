@@ -71,7 +71,7 @@ As described above, it is necessary to set up a [Redis](https://redis.io/) serve
 Having configured it, you need to add and adjust the following configuration to your `vars.yml` file, so that the Send instance will connect to the server:
 
 ```yaml
-send_environment_variable_redis_host: YOUR_REDIS_SERVER_HOSTNAME_HERE
+send_environment_variable_redis_hostname: YOUR_REDIS_SERVER_HOSTNAME_HERE
 send_environment_variable_redis_port: 6379
 send_environment_variable_redis_user: ''
 send_environment_variable_redis_password: ''
