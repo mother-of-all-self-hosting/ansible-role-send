@@ -173,7 +173,10 @@ send_systemd_required_services_list_auto: []
 send_systemd_required_services_list_custom: []
 
 # List of systemd services that the Send systemd service wants
-send_systemd_wanted_services_list: []
+send_systemd_wanted_services_list: "{{ send_systemd_wanted_services_list_default + send_systemd_wanted_services_list_auto + send_systemd_wanted_services_list_custom }}"
+send_systemd_wanted_services_list_default: []
+send_systemd_wanted_services_list_auto: []
+send_systemd_wanted_services_list_custom: []
 
 # Control storage backend options
 # Also see: https://github.com/timvisee/send/blob/master/docs/docker.md#storage-backend-options
