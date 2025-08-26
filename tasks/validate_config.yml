@@ -29,6 +29,30 @@
     - send_container_network
     - send_environment_variable_redis_hostname
 
+- name: Fail if Send storage backend option is invalid
+  ansible.builtin.fail:
+    msg: >-
+      send_storage_backend_option must be 'localsystem', 's3compatible', or 'gcs'
+  when: "send_storage_backend_option not in ['localsystem', 's3compatible', 'gcs']"
+
+- name: Fail if required Send + S3 integration settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) when `send_storage_backend_option` is `s3compatible`
+  when: "send_storage_backend_option == 's3compatible' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - send_environment_variable_s3_bucket
+    - send_environment_variable_aws_access_key_id
+    - send_environment_variable_aws_secret_access_key
+
+- name: Fail if required Send + GoogleCloudStorage integration settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) when `send_storage_backend_option` is `gcs`
+  when: "send_storage_backend_option == 'gcs' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - send_environment_variable_gcs_bucket
+
 - name: Run if Traefik is enabled
   when: send_container_labels_traefik_enabled | bool
   block:
