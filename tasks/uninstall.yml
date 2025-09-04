@@ -42,12 +42,14 @@
         cmd: "rmdir {{ send_data_path }}"
       register: send_data_path_deletion_result
       changed_when: send_data_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Send base path does not exist if empty
       ansible.builtin.command:
         cmd: "rmdir {{ send_base_path }}"
       register: send_base_path_deletion_result
       changed_when: send_base_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Send container network does not exist via community.docker.docker_network
       when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
