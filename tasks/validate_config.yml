@@ -15,6 +15,7 @@
     - { 'old': 'send_environment_variable_S3_bucket', 'new': 'send_environment_variable_s3_bucket' }
     - { 'old': 'send_environment_variable_S3_endpoint', 'new': 'send_environment_variable_s3_endpoint' }
     - { 'old': 'send_environment_variable_S3_use_path_style_endpoint', 'new': 'send_environment_variable_s3_use_path_style_endpoint' }
+    - { "old": "nextcloud_http_header_content_permission_policy", "new": "nextcloud_http_header_permissions_policy" }
 
 - name: Fail if required Send settings not defined
   ansible.builtin.fail:
