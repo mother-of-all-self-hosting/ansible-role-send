@@ -54,7 +54,7 @@ send_enabled: true
 
 ### Set the hostname
 
-To enable the Send you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
+To enable the Send instance you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
 
 ```yaml
 send_hostname: "example.com"
