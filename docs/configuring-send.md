@@ -73,9 +73,9 @@ Having configured it, you need to add and adjust the following configuration to 
 ```yaml
 send_environment_variable_redis_hostname: YOUR_REDIS_SERVER_HOSTNAME_HERE
 send_environment_variable_redis_port: 6379
-send_environment_variable_redis_user: ''
-send_environment_variable_redis_password: ''
-send_environment_variable_redis_db: ''
+send_environment_variable_redis_user: ""
+send_environment_variable_redis_password: ""
+send_environment_variable_redis_db: ""
 ```
 
 Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with the hostname of your Redis server. If the Redis server runs on the same host as Send, set `localhost`.
@@ -92,19 +92,19 @@ To use Amazon S3 or a S3 compatible object storage, add the following configurat
 send_storage_backend_option: s3compatible
 
 # Set a S3 bucket name to use
-send_environment_variable_s3_bucket: ''
+send_environment_variable_s3_bucket: ""
 
 # Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
-# send_environment_variable_s3_endpoint: ''
+# send_environment_variable_s3_endpoint: ""
 
 # Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects
 send_environment_variable_s3_use_path_style_endpoint: false
 
 # Set a S3 access key ID
-send_environment_variable_aws_access_key_id: ''
+send_environment_variable_aws_access_key_id: ""
 
 # Set a S3 secret access key ID
-send_environment_variable_aws_secret_access_key: ''
+send_environment_variable_aws_secret_access_key: ""
 ```
 
 #### Google Cloud Storage
@@ -115,7 +115,7 @@ To use Google Cloud Storage, add and adjust the following configuration to your 
 send_storage_backend_option: gcs
 
 # Set a Google Cloud Storage bucket
-send_environment_variable_gcs_bucket: ''
+send_environment_variable_gcs_bucket: ""
 ```
 
 Before using it, authentication should be set up with [Application Default Credentials](https://cloud.google.com/docs/authentication/production#auth-cloud-implicit-nodejs).
@@ -148,7 +148,7 @@ To set a URL to the contact page for DMCA requests, add the following configurat
 
 ```yaml
 # default: empty
-send_environment_variable_send_footer_dmca_url: ''
+send_environment_variable_send_footer_dmca_url: ""
 ```
 
 See [the section about usage](#takedown-illegal-materials) below to check how to takedown an illegal file from the service.

@@ -19,11 +19,11 @@ send_data_path: "{{ send_base_path }}/data"
 # renovate: datasource=docker depName=registry.gitlab.com/timvisee/send
 send_version: v3.4.27
 
-send_uid: ''
-send_gid: ''
+send_uid: ""
+send_gid: ""
 
 # The hostname at which Send is served.
-send_hostname: ''
+send_hostname: ""
 
 # Specify URI scheme for send_environment_variable_base_url.
 send_scheme: https
@@ -51,7 +51,7 @@ send_container_image_self_build_src_files_path: "{{ send_base_path }}/docker-src
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-send_container_http_host_bind_port: ''
+send_container_http_host_bind_port: ""
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 send_container_network: "{{ send_identifier }}"
@@ -114,7 +114,7 @@ send_container_labels_traefik_additional_response_headers_custom: {}
 # send_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-send_container_labels_additional_labels: ''
+send_container_labels_additional_labels: ""
 
 # A list of extra arguments to pass to the container (`docker run` command)
 send_container_extra_arguments: []
@@ -195,10 +195,10 @@ send_environment_variable_port: 1443
 # Control whether Send is run on `development` mode (unsafe) or `production` mode
 send_environment_variable_node_env: production
 # Set a URL to a contact page for DMCA requests
-send_environment_variable_send_footer_dmca_url: ''
+send_environment_variable_send_footer_dmca_url: ""
 # Set a Sentry Client ID and DSN for error tracking
-send_environment_variable_sentry_client: ''
-send_environment_variable_sentry_dsn: ''
+send_environment_variable_sentry_client: ""
+send_environment_variable_sentry_dsn: ""
 
 # env.j2: Upload and Download Limits
 #
@@ -222,26 +222,26 @@ send_environment_variable_default_expire_seconds: '86400'
 # env.j2: Storage Backend Options
 #
 # Set a hostname, port, and pass of the Redis, KeyDB, or Valkey server
-send_environment_variable_redis_hostname: ''
+send_environment_variable_redis_hostname: ""
 send_environment_variable_redis_port: 6379
-send_environment_variable_redis_user: ''
-send_environment_variable_redis_password: ''
-send_environment_variable_redis_db: ''
+send_environment_variable_redis_user: ""
+send_environment_variable_redis_password: ""
+send_environment_variable_redis_db: ""
 # Set a directory for storage inside the Docker container
 send_environment_variable_file_dir: /uploads
 # Set a S3 bucket name to use
-send_environment_variable_s3_bucket: ''
+send_environment_variable_s3_bucket: ""
 # Set a custom endpoint to use for S3 (defaults to AWS; set if using a S3 compatible storage like Wasabi and Storj)
-send_environment_variable_s3_endpoint: ''
+send_environment_variable_s3_endpoint: ""
 # Control whether to force path style URLs (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#s3ForcePathStyle-property) for S3 objects
 send_environment_variable_s3_use_path_style_endpoint: false
 # Set a S3 access key ID
-send_environment_variable_aws_access_key_id: ''
+send_environment_variable_aws_access_key_id: ""
 # Set a S3 secret access key ID
-send_environment_variable_aws_secret_access_key: ''
+send_environment_variable_aws_secret_access_key: ""
 # Set a Google Cloud Storage bucket
-send_environment_variable_gcs_bucket: ''
+send_environment_variable_gcs_bucket: ""
 
 # Additional environment variables.
 # See: https://github.com/timvisee/send/blob/master/server/config.js
-send_environment_variables_additional_variables: ''
+send_environment_variables_additional_variables: ""
