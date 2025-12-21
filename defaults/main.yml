@@ -28,7 +28,7 @@ send_hostname: ""
 # Specify URI scheme for send_environment_variable_base_url.
 send_scheme: https
 
-# The path at which Send is exposed.
+# The path at which Send is served.
 # This value must either be `/` or not end with a slash (e.g. `/send`).
 #
 # Hosting Send under a subpath does not seem to be possible due to Send's
