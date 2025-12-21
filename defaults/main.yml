@@ -119,7 +119,7 @@ send_container_labels_additional_labels: "{{ send_container_labels_additional_la
 send_container_labels_additional_labels_auto: {}
 send_container_labels_additional_labels_custom: {}
 
-# A list of extra arguments to pass to the container (`docker run` command)
+# A list of extra arguments to pass to the container (`docker create` command)
 send_container_extra_arguments: "{{ send_container_extra_arguments_auto + send_container_extra_arguments_custom }}"
 send_container_extra_arguments_auto: []
 send_container_extra_arguments_custom: []
