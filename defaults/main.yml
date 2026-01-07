@@ -113,11 +113,11 @@ send_container_labels_traefik_additional_response_headers_custom: {}
 #
 # Example:
 # send_container_labels_additional_labels_custom: |
-#   my.label=1
-#   another.label="here"
-send_container_labels_additional_labels: "{{ send_container_labels_additional_labels_auto | combine(send_container_labels_additional_labels_custom) }}"
-send_container_labels_additional_labels_auto: {}
-send_container_labels_additional_labels_custom: {}
+#   - my.label=1
+#   - another.label="here"
+send_container_labels_additional_labels: "{{ send_container_labels_additional_labels_auto + send_container_labels_additional_labels_custom }}"
+send_container_labels_additional_labels_auto: []
+send_container_labels_additional_labels_custom: []
 
 # A list of extra arguments to pass to the container (`docker create` command)
 send_container_extra_arguments: "{{ send_container_extra_arguments_auto + send_container_extra_arguments_custom }}"

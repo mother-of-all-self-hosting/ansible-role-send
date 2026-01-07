@@ -56,4 +56,6 @@ traefik.http.routers.{{ send_identifier }}.tls.certResolver={{ send_container_la
 traefik.http.services.{{ send_identifier }}.loadbalancer.server.port={{ send_environment_variable_port }}
 {% endif %}
 
-{{ send_container_labels_additional_labels }}
+{% for arg in send_container_labels_additional_labels %}
+{{ arg }}
+{% endfor %}
