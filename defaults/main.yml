@@ -22,11 +22,11 @@ send_version: v3.4.27
 send_uid: ""
 send_gid: ""
 
+# The scheme used for serving Send.
+send_scheme: https
+
 # The hostname at which Send is served.
 send_hostname: ""
-
-# Specify URI scheme for send_environment_variable_base_url.
-send_scheme: https
 
 # The path at which Send is served.
 # This value must either be `/` or not end with a slash (e.g. `/send`).
