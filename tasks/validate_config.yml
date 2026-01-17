@@ -11,6 +11,7 @@
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
   when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
   with_items:
+    - { "old": "send_environment_variable_port", "new": "send_container_http_port" }
     - { "old": "send_environment_variable_redis_host", "new": "send_environment_variable_redis_hostname" }
     - { "old": "send_environment_variable_S3_bucket", "new": "send_environment_variable_s3_bucket" }
     - { "old": "send_environment_variable_S3_endpoint", "new": "send_environment_variable_s3_endpoint" }

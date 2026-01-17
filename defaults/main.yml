@@ -56,6 +56,9 @@ send_container_network: "{{ send_identifier }}"
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 send_container_http_host_bind_port: ""
 
+# The port number in the container
+send_container_http_port: 1443
+
 # A list of additional container networks that the container would be connected to.
 # The role does not create these networks, so make sure they already exist.
 # Use this to expose this container to another reverse proxy, which runs in a different container network.
@@ -198,8 +201,6 @@ send_storage_backend_option: localsystem
 send_environment_variable_base_url: "{{ send_scheme }}://{{ send_hostname }}"
 # Control whether the base URL is detected automatically using browser if send_environment_variable_base_url is unset
 send_environment_variable_detect_base_url: false
-# Set the port number on which the server will listen
-send_environment_variable_port: 1443
 # Control whether Send is run on `development` mode (unsafe) or `production` mode
 send_environment_variable_node_env: production
 # Set a URL to a contact page for DMCA requests
