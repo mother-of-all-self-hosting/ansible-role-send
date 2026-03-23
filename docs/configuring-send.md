@@ -1,17 +1,17 @@
 <!--
-SPDX-FileCopyrightText: 2020 - 2024 MDAD project contributors
-SPDX-FileCopyrightText: 2020 - 2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2020 Aaron Raimist
 SPDX-FileCopyrightText: 2020 Chris van Dijk
 SPDX-FileCopyrightText: 2020 Dominik Zajac
 SPDX-FileCopyrightText: 2020 Mickaël Cornière
+SPDX-FileCopyrightText: 2020-2024 MDAD project contributors
+SPDX-FileCopyrightText: 2020-2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2022 François Darveau
 SPDX-FileCopyrightText: 2022 Julian Foad
 SPDX-FileCopyrightText: 2022 Warren Bailey
 SPDX-FileCopyrightText: 2023 Antonis Christofides
 SPDX-FileCopyrightText: 2023 Felix Stupp
 SPDX-FileCopyrightText: 2023 Pierre 'McFly' Marty
-SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2024-2026 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -71,11 +71,11 @@ As described above, it is necessary to set up a [Redis](https://redis.io/) serve
 Having configured it, you need to add and adjust the following configuration to your `vars.yml` file, so that the Send instance will connect to the server:
 
 ```yaml
-send_environment_variable_redis_hostname: YOUR_REDIS_SERVER_HOSTNAME_HERE
-send_environment_variable_redis_port: 6379
-send_environment_variable_redis_user: ""
-send_environment_variable_redis_password: ""
-send_environment_variable_redis_db: ""
+send_redis_hostname: YOUR_REDIS_SERVER_HOSTNAME_HERE
+send_redis_port: 6379
+send_redis_user: ""
+send_redis_password: ""
+send_redis_db: ""
 ```
 
 Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with the hostname of your Redis server. If the Redis server runs on the same host as Send, set `localhost`.

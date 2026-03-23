@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2023 - 2024 Nikita Chernyi
-# SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023, 2024 Nikita Chernyi
+# SPDX-FileCopyrightText: 2023-2025 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
 # SPDX-FileCopyrightText: 2025 MASH project contributors
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -223,6 +223,13 @@ send_container_cleanup_command: |
 # Specify the timezone
 send_environment_variables_tz: UTC
 
+# Specify Redis configuration
+send_redis_hostname: ""
+send_redis_port: 6379
+send_redis_user: ""
+send_redis_password: ""
+send_redis_db: ""
+
 # Control storage backend options
 # Also see: https://github.com/timvisee/send/blob/master/docs/docker.md#storage-backend-options
 #
@@ -262,14 +269,7 @@ send_environment_variable_default_downloads: '1'
 # Set the default expiration time displayed on UI
 send_environment_variable_default_expire_seconds: '86400'
 
-# env.j2: Storage Backend Options
-#
-# Set a hostname, port, and pass of the Redis, KeyDB, or Valkey server
-send_environment_variable_redis_hostname: ""
-send_environment_variable_redis_port: 6379
-send_environment_variable_redis_user: ""
-send_environment_variable_redis_password: ""
-send_environment_variable_redis_db: ""
+
 # Set a directory for storage inside the Docker container
 send_environment_variable_file_dir: /uploads
 # Set a S3 bucket name to use
