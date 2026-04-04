@@ -26,7 +26,7 @@ See the project's [documentation](https://github.com/timvisee/send/blob/master/R
 
 ## Prerequisites
 
-To run a Send instance it is necessary to prepare a [Redis](https://redis.io/) server for managing a metadata database.
+To run a Send instance it is necessary to prepare a [Redis](https://redis.io/) database for managing a metadata database.
 
 If you are looking for an Ansible role for Redis, you can check out [this role (ansible-role-redis)](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The roles for [KeyDB](https://keydb.dev/) ([ansible-role-keydb](https://github.com/mother-of-all-self-hosting/ansible-role-keydb)) and [Valkey](https://valkey.io/) ([ansible-role-valkey](https://github.com/mother-of-all-self-hosting/ansible-role-valkey)) are available as well.
 
@@ -64,11 +64,11 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 **Note**: hosting Send under a subpath (by configuring the `send_path_prefix` variable) does not seem to be possible due to Send's technical limitations.
 
-### Set variables for connecting to a Redis server
+### Configure a Redis database
 
-As described above, it is necessary to set up a [Redis](https://redis.io/) server for managing a metadata database of a Send instance. You can use either KeyDB or Valkey alternatively.
+It is necessary to set up a [Redis](https://redis.io/) database for the Send instance. KeyDB or Valkey can also be used instead.
 
-Having configured it, you need to add and adjust the following configuration to your `vars.yml` file, so that the Send instance will connect to the server:
+To enable the Redis database for Send, add the following configuration to your `vars.yml` file:
 
 ```yaml
 send_redis_hostname: YOUR_REDIS_SERVER_HOSTNAME_HERE
@@ -78,7 +78,7 @@ send_redis_password: ""
 send_redis_db: ""
 ```
 
-Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with the hostname of your Redis server. If the Redis server runs on the same host as Send, set `localhost`.
+Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with your own value.
 
 ### Configure a storage backend
 
