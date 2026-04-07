@@ -28,7 +28,7 @@ See the project's [documentation](https://github.com/timvisee/send/blob/master/R
 
 To run a Send instance it is necessary to prepare a [Redis](https://redis.io/) database for managing a metadata database.
 
-If you are looking for an Ansible role for Redis, you can check out [this role (ansible-role-redis)](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The roles for [KeyDB](https://keydb.dev/) ([ansible-role-keydb](https://github.com/mother-of-all-self-hosting/ansible-role-keydb)) and [Valkey](https://valkey.io/) ([ansible-role-valkey](https://github.com/mother-of-all-self-hosting/ansible-role-valkey)) are available as well.
+If you are looking for an Ansible role for Redis, you can check out [this role (ansible-role-redis)](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The role for [Valkey](https://valkey.io/) ([ansible-role-valkey](https://github.com/mother-of-all-self-hosting/ansible-role-valkey)) is available as well.
 
 ## Adjusting the playbook configuration
 
@@ -66,7 +66,7 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 ### Configure a Redis database
 
-It is necessary to set up a [Redis](https://redis.io/) database for the Send instance. KeyDB or Valkey can also be used instead.
+It is necessary to set up a Redis database for the Send instance. Valkey can also be used instead.
 
 To enable the Redis database for Send, add the following configuration to your `vars.yml` file:
 
@@ -196,13 +196,13 @@ See its [documentation](https://github.com/timvisee/ffsend/blob/master/README.md
 When a DMCA compliant was submitted or an abuse was detected, you need to remove the illegal material from the service. You can make the file inaccessible by following the steps below:
 
 1. Take a note of an ID of the file which needs to make inaccessible. The ID is contained in the URL. For example, if the URL is [https://example.com/download/fa04ec7f8ce1bc05/#PhQ5XsSkKwcLfaODf9-K3B](https://example.com/download/fa04ec7f8ce1bc05/#PhQ5XsSkKwcLfaODf9-K3B), the file ID is `fa04ec7f8ce1bc05`.
-2. Run a `DEL` command with the file ID from a host with access to the Redis server:
+2. Run a `DEL` command with the file ID from a host with access to the Redis database:
 
    ```sh
    redis-cli DEL fa04ec7f8ce1bc05
    ```
 
-   If you run a Redis, KeyDB, or Valkey server on a Docker container along with the contaiener for Send on the same server, you can directly run the command with `docker exec`:
+   If you run a Redis database on a Docker container along with the contaiener for Send on the same server, you can directly run the command with `docker exec`:
 
    ```sh
    docker exec -it YOUR_CONTAINER_FOR_REDIS_HERE sh -c "redis-cli DEL fa04ec7f8ce1bc05"
