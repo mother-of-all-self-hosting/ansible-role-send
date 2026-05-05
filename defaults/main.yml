@@ -40,7 +40,6 @@ send_container_image_tag: "{{ send_version }}"
 send_container_image_registry_prefix: "{{ send_container_image_registry_prefix_upstream }}"
 send_container_image_registry_prefix_upstream: "{{ send_container_image_registry_prefix_upstream_default }}"
 send_container_image_registry_prefix_upstream_default: registry.gitlab.com/
-send_container_image_force_pull: "{{ send_container_image.endswith(':latest') }}"
 
 send_container_image_self_build: false
 send_container_image_self_build_name: "timvisee/send:{{ send_container_image_self_build_repo_version }}"
