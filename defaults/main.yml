@@ -268,7 +268,6 @@ send_environment_variable_default_downloads: '1'
 # Set the default expiration time displayed on UI
 send_environment_variable_default_expire_seconds: '86400'
 
-
 # Set a directory for storage inside the Docker container
 send_environment_variable_file_dir: /uploads
 # Set a S3 bucket name to use
