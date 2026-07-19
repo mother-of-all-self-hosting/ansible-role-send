@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify Send systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for Send service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: send.service
+      register: send_service
+      until: send_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert Send service is active
+      ansible.builtin.assert:
+        that: send_service.status.ActiveState == 'active'
+        fail_msg: "send.service not active ({{ send_service.status.ActiveState }})"
+        success_msg: "send.service is active"
+
+    - name: Retrieve Send service log for debugging
+      when: send_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu send.service
+      changed_when: false
+
+    - name: Wait for Send HTTP endpoint to respond (up to 10m)
+      ansible.builtin.uri:
+        url: "http://localhost:1443/"
+        method: GET
+        status_code: [200, 301, 302]
+        follow_redirects: none
+      register: send_endpoint
+      until: send_endpoint.status in [200, 301, 302]
+      retries: 120
+      delay: 5
+
+    - name: Assert Send HTTP endpoint responds
+      ansible.builtin.assert:
+        that: send_endpoint.status in [200, 301, 302]
+        fail_msg: "Send did not respond as expected ({{ send_endpoint.status | default('no response') }})"
+        success_msg: "Send responded with {{ send_endpoint.status }}"
+
+    - name: Show Send systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "Send systemd: {{ send_service.status.ActiveState }}"
+          - "Send HTTP: {{ send_endpoint.status }}"
