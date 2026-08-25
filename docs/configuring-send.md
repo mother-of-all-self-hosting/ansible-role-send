@@ -80,6 +80,19 @@ send_redis_db: ""
 
 Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` with your own value.
 
+#### Surviving a restart of the Redis database
+
+Send does not reconnect to its Redis database indefinitely. Its client gives up permanently once reconnection attempts have gone on for `REDIS_RETRY_TIME` milliseconds (10 seconds by default), and the process never tries again — it keeps serving its pages and reporting a healthy systemd unit, while every upload and download fails and `/__heartbeat__` answers `500`. Restarting the Redis (or Valkey) service therefore leaves Send broken until its own container is restarted too.
+
+If you would rather have Send wait out an outage, raise the retry window through the additional environment variables:
+
+```yaml
+send_environment_variables_additional_variables: |
+  REDIS_RETRY_TIME=86400000
+```
+
+With that in place Send picks its database back up on its own once it returns. The tradeoff is that requests block for the duration of the outage instead of failing quickly, so `/__heartbeat__` stops answering rather than answering `500` while the database is away.
+
 ### Configure a storage backend
 
 The service provides these storage backend options: local filesystem (default), Amazon S3 compatible object storage, and Google Cloud Storage.
