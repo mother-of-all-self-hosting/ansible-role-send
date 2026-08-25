@@ -1,14 +1,51 @@
-# SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Verify Send systemd service
+- name: Verify a self-built Send
   hosts: all
   become: true
   gather_facts: false
+
+  vars:
+    # Uploaded verbatim and read back off disk, so it must survive a round trip
+    # through Send's WebSocket upload path unchanged.
+    send_verify_payload: molecule-send-payload-42
+
+    # Send stores a blob under `<prefix>-<id>`, where the prefix is the upload's
+    # lifetime in whole days, floored, and at least 1. The probe asks for one
+    # hour, so the prefix is deterministically 1.
+    send_verify_blob_prefix: 1
+
   tasks:
+    # `send_version` is read straight out of defaults/main.yml, unmediated by
+    # anything this scenario could have overridden, because it is the leaf
+    # literal Renovate edits and asserting against it is what earns the role
+    # its automerged bumps. Only leaf literals may be read this way: values
+    # built out of them through Jinja cannot resolve in a namespaced copy, and
+    # scenario-tuned values must not be read from here at all, since these
+    # defaults would outrank the inventory.
+    - name: Read the Send role's defaults
+      ansible.builtin.include_vars:
+        file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
+        name: send_role_defaults
+
+    # The Jinja-derived values, resolved by the role itself during converge.
+    - name: Read the values the role resolved
+      ansible.builtin.slurp:
+        src: /root/send-molecule-resolved.json
+      register: send_resolved_raw
+
+    - name: Remember the values the role resolved
+      ansible.builtin.set_fact:
+        send_resolved: "{{ send_resolved_raw.content | b64decode | from_json }}"
+
+    # Worth little on its own: the systemd unit carries `Restart=always`, so a
+    # container that crashes on every boot still reports `active`. Everything
+    # below is what actually decides whether Send works.
     - name: Wait for Send service to become active (up to 180s)
       ansible.builtin.systemd:
         name: send.service
@@ -29,25 +66,174 @@
         cmd: journalctl -xeu send.service
       changed_when: false
 
-    - name: Wait for Send HTTP endpoint to respond (up to 10m)
+    # What separates this scenario from `default`: nothing was pulled from a
+    # registry here, so these two checks establish that the image the unit runs
+    # really is the one built on this machine, out of a checkout standing at
+    # the revision `send_version` pins. Without them a leftover or pulled image
+    # could satisfy every probe below.
+    - name: Determine which container image Send runs
+      ansible.builtin.command:
+        cmd: docker inspect --format {{ '{{.Config.Image}}' }} send
+      register: send_container_image_in_use
+      changed_when: false
+
+    - name: Assert Send runs the locally built image rather than a pulled one
+      ansible.builtin.assert:
+        that:
+          - send_container_image_in_use.stdout == send_resolved.self_build_image
+          - send_container_image_in_use.stdout != send_resolved.container_image
+          - send_container_image_in_use.stdout.split(':') | last == send_role_defaults.send_version
+        fail_msg: >-
+          Send runs {{ send_container_image_in_use.stdout }},
+          but the role builds {{ send_resolved.self_build_image }}
+        success_msg: "Send runs the locally built {{ send_container_image_in_use.stdout }}"
+
+    # `ansible.builtin.git` can check a revision out but cannot report which one
+    # a working copy stands at, which is the whole point here.
+    - name: Determine the revision the image was built from  # noqa: command-instead-of-module
+      ansible.builtin.command:
+        cmd: "git -C {{ send_resolved.self_build_src_path }} describe --tags --exact-match"
+      register: send_self_build_revision
+      changed_when: false
+
+    - name: Assert the image was built from the revision the role pins
+      ansible.builtin.assert:
+        that: send_self_build_revision.stdout == send_role_defaults.send_version
+        fail_msg: >-
+          The checkout stands at {{ send_self_build_revision.stdout }},
+          but the role pins {{ send_role_defaults.send_version }}
+        success_msg: "The image was built from {{ send_self_build_revision.stdout }}"
+
+    - name: Wait for Send to serve its version endpoint (up to 10m)
       ansible.builtin.uri:
-        url: "http://localhost:1443/"
+        url: "http://localhost:1443/__version__"
         method: GET
-        status_code: [200, 301, 302]
+        status_code: [200]
         follow_redirects: none
-      register: send_endpoint
-      until: send_endpoint.status in [200, 301, 302]
+      register: send_version_endpoint
+      until: send_version_endpoint.status == 200
       retries: 120
       delay: 5
 
-    - name: Assert Send HTTP endpoint responds
+    # Send writes `dist/version.json` out of its own `package.json` during the
+    # image build, so this is the build's own account of what it produced, and
+    # not merely a repetition of the tag the checkout was made from.
+    - name: Assert Send runs the version the role pins
       ansible.builtin.assert:
-        that: send_endpoint.status in [200, 301, 302]
-        fail_msg: "Send did not respond as expected ({{ send_endpoint.status | default('no response') }})"
-        success_msg: "Send responded with {{ send_endpoint.status }}"
+        that: send_version_endpoint.json.version == send_role_defaults.send_version
+        fail_msg: >-
+          Send reports version {{ send_version_endpoint.json.version | default('none') }},
+          but the role pins {{ send_role_defaults.send_version }}
+        success_msg: "Send runs {{ send_version_endpoint.json.version }}, as pinned by the role"
 
-    - name: Show Send systemd service status summary
+    - name: Retrieve Send's client configuration
+      ansible.builtin.uri:
+        url: "http://localhost:1443/config"
+        method: GET
+        status_code: [200]
+        follow_redirects: none
+      register: send_config_endpoint
+
+    # `/config` reports the values Send's configuration layer resolved, so it
+    # sees the role's `env` file rather than the template on disk. The limits
+    # below are set by this scenario to values Send would never arrive at on
+    # its own, and the two dropdown lists additionally prove that the derived
+    # defaults (which interpolate those limits) rendered correctly.
+    - name: Assert Send is configured by the env file the role renders
+      ansible.builtin.assert:
+        that:
+          - send_config_endpoint.json.LIMITS.MAX_DOWNLOADS == send_environment_variable_max_downloads
+          - send_config_endpoint.json.LIMITS.MAX_FILES_PER_ARCHIVE == send_environment_variable_max_files_per_archive
+          - send_config_endpoint.json.LIMITS.MAX_EXPIRE_SECONDS == send_environment_variable_max_expire_seconds
+          - send_config_endpoint.json.LIMITS.MAX_FILE_SIZE == send_resolved.max_file_size | int
+          - send_config_endpoint.json.DEFAULTS.DOWNLOAD_COUNTS == [1, 2, 3, 4, 5, send_environment_variable_max_downloads]
+          - send_config_endpoint.json.DEFAULTS.EXPIRE_TIMES_SECONDS == [300, 3600, 86400, send_environment_variable_max_expire_seconds]
+        fail_msg: "Send did not resolve the configuration the role rendered: {{ send_config_endpoint.json }}"
+        success_msg: "Send resolved the limits and dropdown defaults the role rendered"
+
+    # `/__heartbeat__` is the only endpoint that touches the metadata store: it
+    # pings Redis and the storage backend and answers 500 when either is
+    # unreachable. `/`, `/config`, `/__version__` and `/__lbheartbeat__` all
+    # answer 200 with Valkey stopped, which is exactly why they cannot stand in
+    # for this check.
+    - name: Retrieve Send's heartbeat (up to 60s)
+      ansible.builtin.uri:
+        url: "http://localhost:1443/__heartbeat__"
+        method: GET
+        status_code: [200]
+        follow_redirects: none
+      register: send_heartbeat_endpoint
+      until: send_heartbeat_endpoint.status == 200
+      retries: 12
+      delay: 5
+
+    - name: Assert Send can reach its metadata store and storage backend
+      ansible.builtin.assert:
+        that: send_heartbeat_endpoint.status == 200
+        fail_msg: "Send's heartbeat failed, so it cannot reach Valkey or its storage directory"
+        success_msg: "Send reaches Valkey and its storage directory"
+
+    # Send's browser client encrypts what it uploads, but the server treats the
+    # payload as opaque bytes, so an unencrypted upload exercises the same
+    # server-side path. This is what turns "Valkey is reachable" into "Valkey
+    # is what Send stores its metadata in".
+    - name: Install the Send upload probe
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/files/send_upload_probe.py"
+        dest: /usr/local/bin/send_upload_probe.py
+        mode: "0755"
+
+    - name: Upload a file to Send over its WebSocket API
+      ansible.builtin.command:
+        cmd: "python3 /usr/local/bin/send_upload_probe.py localhost 1443 {{ send_verify_payload }}"
+      register: send_upload
+      changed_when: true
+
+    - name: Remember what Send said about the upload
+      ansible.builtin.set_fact:
+        send_upload_result: "{{ send_upload.stdout | from_json }}"
+
+    - name: Read the upload's metadata back out of Valkey
+      ansible.builtin.command:
+        cmd: "docker exec {{ valkey_identifier }} valkey-cli hget {{ send_upload_result.id }} {{ item }}"
+      register: send_valkey_fields
+      changed_when: false
+      loop:
+        - owner
+        - dlimit
+        - prefix
+
+    - name: Assert Valkey holds the upload's metadata
+      ansible.builtin.assert:
+        that:
+          - send_valkey_fields.results[0].stdout == send_upload_result.owner_token
+          - send_valkey_fields.results[1].stdout == '1'
+          - send_valkey_fields.results[2].stdout == send_verify_blob_prefix | string
+        fail_msg: >-
+          Valkey does not hold the metadata Send returned for upload
+          {{ send_upload_result.id }}: {{ send_valkey_fields.results | map(attribute='stdout') | list }}
+        success_msg: "Valkey holds the metadata Send returned for upload {{ send_upload_result.id }}"
+
+    - name: Read the uploaded blob back off the host
+      ansible.builtin.slurp:
+        src: "{{ send_resolved.data_path }}/{{ send_verify_blob_prefix }}-{{ send_upload_result.id }}"
+      register: send_uploaded_blob
+
+    # The blob living under the role's own data path is also what proves the
+    # bind mount into the container's `FILE_DIR` is wired up correctly.
+    - name: Assert the uploaded blob landed in the role's data path intact
+      ansible.builtin.assert:
+        that: send_uploaded_blob.content | b64decode == send_verify_payload
+        fail_msg: >-
+          {{ send_resolved.data_path }}/{{ send_verify_blob_prefix }}-{{ send_upload_result.id }}
+          does not hold what was uploaded
+        success_msg: "The uploaded blob is stored under {{ send_resolved.data_path }}"
+
+    - name: Show what was verified
       ansible.builtin.debug:
         msg:
           - "Send systemd: {{ send_service.status.ActiveState }}"
-          - "Send HTTP: {{ send_endpoint.status }}"
+          - "Send version: {{ send_version_endpoint.json.version }}"
+          - "Send image: {{ send_container_image_in_use.stdout }} built from {{ send_self_build_revision.stdout }}"
+          - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
+          - "Upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"

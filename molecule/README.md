@@ -43,11 +43,28 @@ pip3 install -r ./molecule/requirements.txt
 
 ## Scenarios
 
-Currently there is one testing scenario available.
+Currently these testing scenarios are available:
 
 ### `default`
 
-Tests a standard Send installation.
+Tests a standard Send installation against a Valkey data-store.
+
+### `default-selfbuild`
+
+Tests the same installation, but with the container image built locally from Send's own repository instead of pulled from the registry.
+
+Because self-building only changes what is tested when `send_version` changes, CI runs this scenario on branches carrying a version bump and on manual dispatch, rather than on every push.
+
+## What the scenarios assert
+
+Serving a page is not evidence that Send works: it answers `200` on `/`, `/config`, `/__version__` and `/__lbheartbeat__` even with its metadata store completely unreachable. The scenarios therefore assert that:
+
+- the running process reports the version `send_version` pins, and runs the container image the role configures (or, for `default-selfbuild`, the locally built one, from a checkout standing at that same revision);
+- `/config` reports the limits and dropdown defaults that the role's `env` file rendered, using values Send would never arrive at on its own;
+- `/__heartbeat__` answers `200`, which is the only endpoint that pings Redis and the storage backend;
+- a real upload over Send's WebSocket API lands its metadata in Valkey and its blob under the role's own data path, and `/api/exists` resolves that upload while rejecting an identifier that was never uploaded.
+
+The upload is performed by [`files/send_upload_probe.py`](./files/send_upload_probe.py). Send's browser client encrypts what it uploads, but the server treats the payload as opaque bytes, so an unencrypted upload exercises the same server-side path without needing the browser's key exchange.
 
 ## Running
 
