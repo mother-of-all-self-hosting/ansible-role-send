@@ -39,6 +39,15 @@ provisioner:
         send_container_labels_traefik_enabled: false
         send_container_http_host_bind_port: 1443
 
+        # Values picked so that they differ both from the role's own defaults
+        # and from the values Send falls back to when nothing configures it
+        # (100 downloads, 64 files per archive, 7 days). `/config` can only
+        # report them if the `env` file this role renders reached the process,
+        # which is what verify.yml asserts.
+        send_environment_variable_max_downloads: 17
+        send_environment_variable_max_files_per_archive: 23
+        send_environment_variable_max_expire_seconds: 259200
+
         # Variables required for Send to connect to the Valkey data-store
         send_redis_hostname: "{{ valkey_identifier }}"
         send_container_additional_networks_custom:
@@ -47,6 +56,11 @@ provisioner:
           - "{{ valkey_identifier }}.service"
 
         # Variables for Valkey
+        # `valkey_identifier` merely repeats the Valkey role's own default. It
+        # is spelled out because verify.yml needs the container name in order
+        # to inspect what Send stored, and another role's defaults are not in
+        # scope in a verifier playbook.
+        valkey_identifier: valkey
         valkey_uid: 1000
         valkey_gid: 1000
         valkey_arch: amd64

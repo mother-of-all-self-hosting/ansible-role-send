@@ -21,6 +21,25 @@
       loop_control:
         loop_var: role_name
 
+    # verify.yml runs as a separate playbook, where the role's variables are no
+    # longer in scope. Reading defaults/main.yml there works for leaf literals
+    # but not for the values built out of them through Jinja, so hand those
+    # over already resolved - by the role's own variable precedence, which is
+    # exactly what the systemd unit was rendered from.
+    - name: Record the values the role resolved, for verify.yml
+      ansible.builtin.copy:
+        content: "{{ send_molecule_resolved | to_nice_json }}"
+        dest: /root/send-molecule-resolved.json
+        mode: "0600"
+      vars:
+        send_molecule_resolved:
+          identifier: "{{ send_identifier }}"
+          container_image: "{{ send_container_image }}"
+          self_build_image: "{{ send_container_image_self_build_name }}"
+          self_build_src_path: "{{ send_container_image_self_build_src_files_path }}"
+          data_path: "{{ send_data_path }}"
+          max_file_size: "{{ send_environment_variable_max_file_size }}"
+
 - name: Ensure services are started
   hosts: all
   become: true
