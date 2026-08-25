@@ -3,7 +3,7 @@ galaxy_info:
   author: Suguru Hirahara
   company: progressiv
   role_name: send
-  namespace: progressiv
+  namespace: mash
   description: Send by Tim Visée
   platforms:
     - name: Debian
