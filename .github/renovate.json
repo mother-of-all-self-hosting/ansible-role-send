@@ -8,7 +8,7 @@
     "Upstream is quiet rather than dead, and that is worth knowing before trusting this automation: the last release, v3.4.27, is from 2025-07-01, and the GitLab project (github.com/timvisee/send is a mirror of it) has seen no commits since. Automerge costs nothing while that lasts; if it lasts much longer, the question for this role becomes whether to keep shipping Send at all rather than whether to automerge it."
   ],
   "extends": [
-    "github>mother-of-all-self-hosting/renovate-config#v1.0.0",
-    "github>mother-of-all-self-hosting/renovate-config//patch-automerge#v1.0.0"
+    "github>mother-of-all-self-hosting/renovate-config#v1.1.0",
+    "github>mother-of-all-self-hosting/renovate-config//patch-automerge#v1.1.0"
   ]
 }
