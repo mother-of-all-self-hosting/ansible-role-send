@@ -149,15 +149,15 @@ jobs:
           cache: pip
           cache-dependency-path: send/molecule/requirements.txt
 
+      - name: Install Python dependencies
+        working-directory: send
+        run: pip install -r molecule/requirements.txt
+
       - name: Cache Ansible collections
         uses: actions/cache@v6.1.0
         with:
           path: ~/.ansible/collections
-          key: ansible-collections-${{ hashFiles('send/molecule/*/requirements.yml') }}
-
-      - name: Install Python dependencies
-        working-directory: send
-        run: pip install -r molecule/requirements.txt
+          key: ansible-collections-${{ hashFiles('send/molecule/default-selfbuild/requirements.yml') }}
 
       - name: Run Molecule
         working-directory: send
