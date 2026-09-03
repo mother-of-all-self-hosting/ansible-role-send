@@ -77,12 +77,6 @@
       retries: 120
       delay: 5
 
-    # This is what earns the role its automerged version bumps: the process
-    # answering on the published port reports the very version that
-    # `send_version` in defaults/main.yml pins, so a bump that did not actually
-    # take effect fails here. Send builds `dist/version.json` at image build
-    # time out of its own `package.json`, prefixed with a `v`, which is the
-    # same shape `send_version` carries.
     - name: Assert Send runs the version the role pins
       ansible.builtin.assert:
         that: send_version_endpoint.json.version == send_role_defaults.send_version
