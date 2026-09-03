@@ -229,11 +229,11 @@
           does not hold what was uploaded
         success_msg: "The uploaded blob is stored under {{ send_resolved.data_path }}"
 
-    - name: Show what was verified
+    - name: Show the Send verification summary
       ansible.builtin.debug:
         msg:
           - "Send systemd: {{ send_service.status.ActiveState }}"
           - "Send version: {{ send_version_endpoint.json.version }}"
           - "Send image: {{ send_container_image_in_use.stdout }} built from {{ send_self_build_revision.stdout }}"
           - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
-          - "Upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"
+          - "Send upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"
