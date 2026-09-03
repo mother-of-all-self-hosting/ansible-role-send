@@ -77,13 +77,11 @@
       retries: 120
       delay: 5
 
-    - name: Assert Send runs the version the role pins
+    - name: Assert the running Send is the version this role installs
       ansible.builtin.assert:
         that: send_version_endpoint.json.version == send_role_defaults.send_version
-        fail_msg: >-
-          Send reports version {{ send_version_endpoint.json.version | default('none') }},
-          but the role pins {{ send_role_defaults.send_version }}
-        success_msg: "Send runs {{ send_version_endpoint.json.version }}, as pinned by the role"
+        fail_msg: "Send reports {{ send_version_endpoint.json.version | default('none') }}, expected {{ send_role_defaults.send_version }}"
+        success_msg: "Send reports {{ send_version_endpoint.json.version }}"
 
     - name: Determine which container image Send runs
       ansible.builtin.command:
