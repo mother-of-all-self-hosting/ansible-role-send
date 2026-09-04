@@ -107,3 +107,30 @@
       {{ send_resolved.data_path }}/{{ send_verify_blob_prefix }}-{{ send_upload_result.id }}
       does not hold what was uploaded
     success_msg: "The uploaded blob is stored under {{ send_resolved.data_path }}"
+
+- name: Ask Send whether the upload exists
+  ansible.builtin.uri:
+    url: "http://localhost:1443/api/exists/{{ send_upload_result.id }}"
+    method: GET
+    status_code: [200]
+    follow_redirects: none
+  register: send_exists_endpoint
+
+# The counterpart matters as much as the check above: `/api/exists` answers
+# 404 for an identifier that was never uploaded, so a 200 for the real one
+# is a genuine lookup in Valkey rather than a blanket success.
+- name: Ask Send about an identifier that was never uploaded
+  ansible.builtin.uri:
+    url: "http://localhost:1443/api/exists/00000000000000ff"
+    method: GET
+    status_code: [404]
+    follow_redirects: none
+  register: send_missing_endpoint
+
+- name: Assert Send looks uploads up in Valkey
+  ansible.builtin.assert:
+    that:
+      - send_exists_endpoint.status == 200
+      - send_missing_endpoint.status == 404
+    fail_msg: "Send does not distinguish an uploaded identifier from an unknown one"
+    success_msg: "Send resolves the uploaded identifier and rejects an unknown one"
