@@ -21,17 +21,13 @@
     send_verify_blob_prefix: 1
 
   tasks:
-    # `send_version` is read straight out of defaults/main.yml, unmediated by
-    # anything this scenario could have overridden, because it is the leaf
-    # literal Renovate edits and asserting against it is what earns the role
-    # its automerged bumps. Only leaf literals may be read this way: values
-    # built out of them through Jinja cannot resolve in a namespaced copy, and
-    # scenario-tuned values must not be read from here at all, since these
-    # defaults would outrank the inventory.
-    - name: Read the Send role's defaults
+    # The role is not included in this playbook, so its defaults are not in
+    # scope. Reading defaults/main.yml directly ties the version assertion
+    # below.
+    - name: Load the role defaults
       ansible.builtin.include_vars:
         file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
-        name: send_role_defaults
+        name: send_defaults
 
     # The Jinja-derived values, resolved by the role itself during converge.
     - name: Read the values the role resolved
@@ -79,8 +75,8 @@
 
     - name: Assert the running Send is the version this role installs
       ansible.builtin.assert:
-        that: send_version_endpoint.json.version == send_role_defaults.send_version
-        fail_msg: "Send reports {{ send_version_endpoint.json.version | default('none') }}, expected {{ send_role_defaults.send_version }}"
+        that: send_version_endpoint.json.version == send_defaults.send_version
+        fail_msg: "Send reports {{ send_version_endpoint.json.version | default('none') }}, expected {{ send_defaults.send_version }}"
         success_msg: "Send reports {{ send_version_endpoint.json.version }}"
 
     - name: Determine which container image Send runs
@@ -96,11 +92,11 @@
       ansible.builtin.assert:
         that:
           - send_container_image_in_use.stdout == send_resolved.container_image
-          - send_container_image_in_use.stdout.split(':') | last == send_role_defaults.send_version
+          - send_container_image_in_use.stdout.split(':') | last == send_defaults.send_version
         fail_msg: >-
           Send runs {{ send_container_image_in_use.stdout }},
           but the role configures {{ send_resolved.container_image }}
-          at version {{ send_role_defaults.send_version }}
+          at version {{ send_defaults.send_version }}
         success_msg: "Send runs {{ send_container_image_in_use.stdout }}"
 
     - name: Retrieve Send's client configuration
