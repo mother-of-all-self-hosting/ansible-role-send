@@ -39,24 +39,27 @@
       ansible.builtin.set_fact:
         send_resolved: "{{ send_resolved_raw.content | b64decode | from_json }}"
 
-    # Worth little on its own: the systemd unit carries `Restart=always`, so a
-    # container that crashes on every boot still reports `active`. Everything
-    # below is what actually decides whether Send works.
-    - name: Wait for Send service to become active (up to 180s)
-      ansible.builtin.systemd:
+    - name: Wait for the Send systemd service to become active (up to 180s)
+      ansible.builtin.systemd_service:
         name: send.service
       register: send_service
       until: send_service.status.ActiveState == 'active'
       retries: 36
       delay: 5
+      # So that giving up is reported by the assertion below rather than as a
+      # wall of systemd unit properties.
+      failed_when: false
 
-    - name: Assert Send service is active
+    # `Restart=always` in the systemd unit means that even a container which crashes
+    # and gets restarted reads as active here, so this is a precondition rather than
+    # a result.
+    - name: Assert the Send systemd service is active
       ansible.builtin.assert:
         that: send_service.status.ActiveState == 'active'
-        fail_msg: "send.service not active ({{ send_service.status.ActiveState }})"
+        fail_msg: "send.service is not active ({{ send_service.status.ActiveState }})"
         success_msg: "send.service is active"
 
-    - name: Retrieve Send service log for debugging
+    - name: Retrieve the Send systemd service log for debugging
       when: send_debug_service_enabled | bool
       ansible.builtin.command:
         cmd: journalctl -xeu send.service
