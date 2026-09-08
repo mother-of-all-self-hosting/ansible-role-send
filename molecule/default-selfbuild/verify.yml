@@ -62,7 +62,7 @@
     - name: Retrieve the Send systemd service log for debugging
       when: send_debug_service_enabled | bool
       ansible.builtin.command:
-        cmd: journalctl -xeu send.service
+        cmd: journalctl --no-pager --output=cat --unit=send.service
       changed_when: false
 
     # What separates this scenario from `default`: nothing was pulled from a
