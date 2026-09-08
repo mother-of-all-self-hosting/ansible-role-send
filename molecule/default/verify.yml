@@ -71,16 +71,16 @@
         method: GET
         status_code: [200]
         follow_redirects: none
-      register: send_version_endpoint
-      until: send_version_endpoint.status == 200
+      register: send_version_reported
+      until: send_version_reported.status == 200
       retries: 120
       delay: 5
 
     - name: Assert the running Send is the version this role installs
       ansible.builtin.assert:
-        that: send_version_endpoint.json.version == send_defaults.send_version
-        fail_msg: "Send reports {{ send_version_endpoint.json.version | default('none') }}, expected {{ send_defaults.send_version }}"
-        success_msg: "Send reports {{ send_version_endpoint.json.version }}"
+        that: send_version_reported.json.version == send_defaults.send_version
+        fail_msg: "Send reports {{ send_version_reported.json.version | default('none') }}, expected {{ send_defaults.send_version }}"
+        success_msg: "Send reports {{ send_version_reported.json.version }}"
 
     - name: Determine which container image Send runs
       ansible.builtin.command:
@@ -110,7 +110,7 @@
       ansible.builtin.debug:
         msg:
           - "Send systemd: {{ send_service.status.ActiveState }}"
-          - "Send version: {{ send_version_endpoint.json.version }}"
+          - "Send version: {{ send_version_reported.json.version }}"
           - "Send image: {{ send_container_image_in_use.stdout }}"
           - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
           - "Send upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"
