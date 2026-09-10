@@ -21,6 +21,8 @@
     send_verify_blob_prefix: 1
 
   tasks:
+    - name: Verify that Send works
+      block:
     # The role is not included in this playbook, so its defaults are not in
     # scope. Reading defaults/main.yml directly ties the version assertion
     # below.
@@ -114,3 +116,19 @@
           - "Send image: {{ send_container_image_in_use.stdout }}"
           - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
           - "Send upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the Send systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=send.service
+          register: send_service_log
+          changed_when: false
+
+        - name: Show the Send systemd service log
+          ansible.builtin.debug:
+            var: send_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "Send verification failed. The systemd service log is printed above."
