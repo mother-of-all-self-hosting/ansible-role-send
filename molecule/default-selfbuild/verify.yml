@@ -23,120 +23,120 @@
   tasks:
     - name: Verify that Send works
       block:
-    # The role is not included in this playbook, so its defaults are not in
-    # scope. Reading defaults/main.yml directly ties the version assertion
-    # below.
-    - name: Load the role defaults
-      ansible.builtin.include_vars:
-        file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
-        name: send_defaults
+        # The role is not included in this playbook, so its defaults are not in
+        # scope. Reading defaults/main.yml directly ties the version assertion
+        # below.
+        - name: Load the role defaults
+          ansible.builtin.include_vars:
+            file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
+            name: send_defaults
 
-    - name: Wait for the Send systemd service to become active (up to 180s)
-      ansible.builtin.systemd_service:
-        name: send.service
-      register: send_service
-      until: send_service.status.ActiveState == 'active'
-      retries: 36
-      delay: 5
-      # So that giving up is reported by the assertion below rather than as a
-      # wall of systemd unit properties.
-      failed_when: false
+        - name: Wait for the Send systemd service to become active (up to 180s)
+          ansible.builtin.systemd_service:
+            name: send.service
+          register: send_service
+          until: send_service.status.ActiveState == 'active'
+          retries: 36
+          delay: 5
+          # So that giving up is reported by the assertion below rather than as a
+          # wall of systemd unit properties.
+          failed_when: false
 
-    # `Restart=always` in the systemd unit means that even a container which crashes
-    # and gets restarted reads as active here, so this is a precondition rather than
-    # a result.
-    - name: Assert the Send systemd service is active
-      ansible.builtin.assert:
-        that: send_service.status.ActiveState == 'active'
-        fail_msg: "send.service is not active ({{ send_service.status.ActiveState }})"
-        success_msg: "send.service is active"
+        # `Restart=always` in the systemd unit means that even a container which crashes
+        # and gets restarted reads as active here, so this is a precondition rather than
+        # a result.
+        - name: Assert the Send systemd service is active
+          ansible.builtin.assert:
+            that: send_service.status.ActiveState == 'active'
+            fail_msg: "send.service is not active ({{ send_service.status.ActiveState }})"
+            success_msg: "send.service is active"
 
-    - name: Retrieve the Send systemd service log for debugging
-      when: send_debug_service_enabled | bool
-      ansible.builtin.command:
-        cmd: journalctl --no-pager --output=cat --unit=send.service
-      changed_when: false
+        - name: Retrieve the Send systemd service log for debugging
+          when: send_debug_service_enabled | bool
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=send.service
+          changed_when: false
 
-    # What separates this scenario from `default`: nothing was pulled from a
-    # registry here, so these two checks establish that the image the unit runs
-    # really is the one built on this machine, out of a checkout standing at
-    # the revision `send_version` pins. Without them a leftover or pulled image
-    # could satisfy every probe below.
-    - name: Determine which container image Send runs
-      ansible.builtin.command:
-        cmd: docker inspect --format {{ '{{.Config.Image}}' }} send
-      register: send_container_image_in_use
-      changed_when: false
+        # What separates this scenario from `default`: nothing was pulled from a
+        # registry here, so these two checks establish that the image the unit runs
+        # really is the one built on this machine, out of a checkout standing at
+        # the revision `send_version` pins. Without them a leftover or pulled image
+        # could satisfy every probe below.
+        - name: Determine which container image Send runs
+          ansible.builtin.command:
+            cmd: docker inspect --format {{ '{{.Config.Image}}' }} send
+          register: send_container_image_in_use
+          changed_when: false
 
-    # The Jinja-derived values, resolved by the role itself during converge.
-    - name: Read the values the role resolved
-      ansible.builtin.slurp:
-        src: /root/send-molecule-resolved.json
-      register: send_resolved_raw
+        # The Jinja-derived values, resolved by the role itself during converge.
+        - name: Read the values the role resolved
+          ansible.builtin.slurp:
+            src: /root/send-molecule-resolved.json
+          register: send_resolved_raw
 
-    - name: Remember the values the role resolved
-      ansible.builtin.set_fact:
-        send_resolved: "{{ send_resolved_raw.content | b64decode | from_json }}"
+        - name: Remember the values the role resolved
+          ansible.builtin.set_fact:
+            send_resolved: "{{ send_resolved_raw.content | b64decode | from_json }}"
 
-    - name: Assert Send runs the locally built image rather than a pulled one
-      ansible.builtin.assert:
-        that:
-          - send_container_image_in_use.stdout == send_resolved.self_build_image
-          - send_container_image_in_use.stdout != send_resolved.container_image
-          - send_container_image_in_use.stdout.split(':') | last == send_defaults.send_version
-        fail_msg: >-
-          Send runs {{ send_container_image_in_use.stdout }},
-          but the role builds {{ send_resolved.self_build_image }}
-        success_msg: "Send runs the locally built {{ send_container_image_in_use.stdout }}"
+        - name: Assert Send runs the locally built image rather than a pulled one
+          ansible.builtin.assert:
+            that:
+              - send_container_image_in_use.stdout == send_resolved.self_build_image
+              - send_container_image_in_use.stdout != send_resolved.container_image
+              - send_container_image_in_use.stdout.split(':') | last == send_defaults.send_version
+            fail_msg: >-
+              Send runs {{ send_container_image_in_use.stdout }},
+              but the role builds {{ send_resolved.self_build_image }}
+            success_msg: "Send runs the locally built {{ send_container_image_in_use.stdout }}"
 
-    # `ansible.builtin.git` can check a revision out but cannot report which one
-    # a working copy stands at, which is the whole point here.
-    - name: Determine the revision the image was built from  # noqa: command-instead-of-module
-      ansible.builtin.command:
-        cmd: "git -C {{ send_resolved.self_build_src_path }} describe --tags --exact-match"
-      register: send_self_build_revision
-      changed_when: false
+        # `ansible.builtin.git` can check a revision out but cannot report which one
+        # a working copy stands at, which is the whole point here.
+        - name: Determine the revision the image was built from  # noqa: command-instead-of-module
+          ansible.builtin.command:
+            cmd: "git -C {{ send_resolved.self_build_src_path }} describe --tags --exact-match"
+          register: send_self_build_revision
+          changed_when: false
 
-    - name: Assert the image was built from the revision the role pins
-      ansible.builtin.assert:
-        that: send_self_build_revision.stdout == send_defaults.send_version
-        fail_msg: >-
-          The checkout stands at {{ send_self_build_revision.stdout }},
-          but the role pins {{ send_defaults.send_version }}
-        success_msg: "The image was built from {{ send_self_build_revision.stdout }}"
+        - name: Assert the image was built from the revision the role pins
+          ansible.builtin.assert:
+            that: send_self_build_revision.stdout == send_defaults.send_version
+            fail_msg: >-
+              The checkout stands at {{ send_self_build_revision.stdout }},
+              but the role pins {{ send_defaults.send_version }}
+            success_msg: "The image was built from {{ send_self_build_revision.stdout }}"
 
-    - name: Wait for Send to serve its version endpoint (up to 10m)
-      ansible.builtin.uri:
-        url: "http://localhost:1443/__version__"
-        method: GET
-        status_code: [200]
-        follow_redirects: none
-      register: send_version_reported
-      until: send_version_reported.status == 200
-      retries: 120
-      delay: 5
+        - name: Wait for Send to serve its version endpoint (up to 10m)
+          ansible.builtin.uri:
+            url: "http://localhost:1443/__version__"
+            method: GET
+            status_code: [200]
+            follow_redirects: none
+          register: send_version_reported
+          until: send_version_reported.status == 200
+          retries: 120
+          delay: 5
 
-    # Send writes `dist/version.json` out of its own `package.json` during the
-    # image build, so this is the build's own account of what it produced, and
-    # not merely a repetition of the tag the checkout was made from.
-    - name: Assert the running Send is the version this role installs
-      ansible.builtin.assert:
-        that: send_version_reported.json.version == send_defaults.send_version
-        fail_msg: "Send reports {{ send_version_reported.json.version | default('none') }}, expected {{ send_defaults.send_version }}"
-        success_msg: "Send reports {{ send_version_reported.json.version }}"
+        # Send writes `dist/version.json` out of its own `package.json` during the
+        # image build, so this is the build's own account of what it produced, and
+        # not merely a repetition of the tag the checkout was made from.
+        - name: Assert the running Send is the version this role installs
+          ansible.builtin.assert:
+            that: send_version_reported.json.version == send_defaults.send_version
+            fail_msg: "Send reports {{ send_version_reported.json.version | default('none') }}, expected {{ send_defaults.send_version }}"
+            success_msg: "Send reports {{ send_version_reported.json.version }}"
 
-    - name: Run the checks shared by all Send scenarios
-      ansible.builtin.include_tasks:
-        file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
+        - name: Run the checks shared by all Send scenarios
+          ansible.builtin.include_tasks:
+            file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
 
-    - name: Show the Send verification summary
-      ansible.builtin.debug:
-        msg:
-          - "Send systemd: {{ send_service.status.ActiveState }}"
-          - "Send version: {{ send_version_reported.json.version }}"
-          - "Send image: {{ send_container_image_in_use.stdout }} built from {{ send_self_build_revision.stdout }}"
-          - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
-          - "Send upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"
+        - name: Show the Send verification summary
+          ansible.builtin.debug:
+            msg:
+              - "Send systemd: {{ send_service.status.ActiveState }}"
+              - "Send version: {{ send_version_reported.json.version }}"
+              - "Send image: {{ send_container_image_in_use.stdout }} built from {{ send_self_build_revision.stdout }}"
+              - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
+              - "Send upload {{ send_upload_result.id }} stored via Valkey and under {{ send_resolved.data_path }}"
 
       rescue:
         # Whatever went wrong, the reason is almost always in the systemd service log.
