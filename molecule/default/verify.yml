@@ -29,16 +29,6 @@
         file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
         name: send_defaults
 
-    # The Jinja-derived values, resolved by the role itself during converge.
-    - name: Read the values the role resolved
-      ansible.builtin.slurp:
-        src: /root/send-molecule-resolved.json
-      register: send_resolved_raw
-
-    - name: Remember the values the role resolved
-      ansible.builtin.set_fact:
-        send_resolved: "{{ send_resolved_raw.content | b64decode | from_json }}"
-
     - name: Wait for the Send systemd service to become active (up to 180s)
       ansible.builtin.systemd_service:
         name: send.service
@@ -87,6 +77,16 @@
         cmd: docker inspect --format {{ '{{.Config.Image}}' }} send
       register: send_container_image_in_use
       changed_when: false
+
+    # The Jinja-derived values, resolved by the role itself during converge.
+    - name: Read the values the role resolved
+      ansible.builtin.slurp:
+        src: /root/send-molecule-resolved.json
+      register: send_resolved_raw
+
+    - name: Remember the values the role resolved
+      ansible.builtin.set_fact:
+        send_resolved: "{{ send_resolved_raw.content | b64decode | from_json }}"
 
     # Two claims, and the second is the one that matters for automerge: the
     # container runs the image the role computed, and that image's tag is the
