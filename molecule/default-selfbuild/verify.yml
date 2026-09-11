@@ -20,6 +20,10 @@
     # hour, so the prefix is deterministically 1.
     send_verify_blob_prefix: 1
 
+    send_verify_units:
+      - send.service
+      - valkey.service
+
   tasks:
     - name: Verify that Send works
       block:
@@ -31,13 +35,14 @@
             file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
             name: send_defaults
 
-        - name: Wait for the Send systemd service to become active (up to 180s)
+        - name: Wait for the Send systemd services to become active (up to 180s each)
           ansible.builtin.systemd_service:
-            name: send.service
-          register: send_service
-          until: send_service.status.ActiveState == 'active'
+            name: "{{ item }}"
+          register: send_services
+          until: send_services.status.ActiveState == 'active'
           retries: 36
           delay: 5
+          loop: "{{ send_verify_units }}"
           # So that giving up is reported by the assertion below rather than as a
           # wall of systemd unit properties.
           failed_when: false
@@ -45,17 +50,20 @@
         # `Restart=always` in the systemd unit means that even a container which crashes
         # and gets restarted reads as active here, so this is a precondition rather than
         # a result.
-        - name: Assert the Send systemd service is active
+        - name: Assert the Send systemd services are active
           ansible.builtin.assert:
-            that: send_service.status.ActiveState == 'active'
-            fail_msg: "send.service is not active ({{ send_service.status.ActiveState }})"
-            success_msg: "send.service is active"
+            that: send_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+            fail_msg: >-
+              Not every service is active:
+              {{ dict(send_verify_units | zip(send_services.results | map(attribute='status.ActiveState'))) }}
+            success_msg: "Every systemd service is active"
 
-        - name: Retrieve the Send systemd service log for debugging
+        - name: Retrieve the Send systemd services log for debugging
           when: send_debug_service_enabled | bool
           ansible.builtin.command:
-            cmd: journalctl --no-pager --output=cat --unit=send.service
+            cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
           changed_when: false
+          loop: "{{ send_verify_units }}"
 
         # What separates this scenario from `default`: nothing was pulled from a
         # registry here, so these two checks establish that the image the unit runs
@@ -132,7 +140,7 @@
         - name: Show the Send verification summary
           ansible.builtin.debug:
             msg:
-              - "Send systemd: {{ send_service.status.ActiveState }}"
+              - "Send systemd: {% for unit, state in send_verify_units | zip(send_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
               - "Send version: {{ send_version_reported.json.version }}"
               - "Send image: {{ send_container_image_in_use.stdout }} built from {{ send_self_build_revision.stdout }}"
               - "Send heartbeat: {{ send_heartbeat_endpoint.status }}"
