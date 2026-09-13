@@ -30,6 +30,7 @@ provisioner:
       all:
         # Helper variables
         send_debug_service_enabled: false
+        send_restarts_check_enabled: true
 
         # Variables for Send
         send_uid: 1000
