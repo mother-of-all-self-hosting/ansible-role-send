@@ -155,7 +155,7 @@ send_environment_variable_download_counts: 1, 2, 3, 4, 5, {{ send_environment_va
 ```
 
 >[!NOTE]
-> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA. See [this section](https://github.com/timvisee/send/blob/5124572dba7cac073d85f3e277d647aa3433ea38/docs/docker.md#environment-variables) on the official documentation for details.
+> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA. Refer to [this section](https://github.com/timvisee/send/blob/5124572dba7cac073d85f3e277d647aa3433ea38/docs/docker.md#environment-variables) on the official documentation for details.
 
 To set a URL to the contact page for DMCA requests, add the following configuration to your `vars.yml` file (adapt to your needs):
 
@@ -164,7 +164,7 @@ To set a URL to the contact page for DMCA requests, add the following configurat
 send_environment_variable_send_footer_dmca_url: ""
 ```
 
-See [the section about usage](#takedown-illegal-materials) below to check how to takedown an illegal file from the service.
+Refer to [the section about usage](#takedown-illegal-materials) below to check how to takedown an illegal file from the service.
 
 ### Extending the configuration
 
