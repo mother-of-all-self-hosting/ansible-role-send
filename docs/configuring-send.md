@@ -164,7 +164,7 @@ To set a URL to the contact page for DMCA requests, add the following configurat
 send_environment_variable_send_footer_dmca_url: ""
 ```
 
-Refer to [the section about usage](#takedown-illegal-materials) below to check how to takedown an illegal file from the service.
+Refer to [the section about the usage](#takedown-illegal-materials) below to check how to takedown an illegal file from the service.
 
 ### Extending the configuration
 
