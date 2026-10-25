@@ -221,7 +221,7 @@ When a DMCA compliant was submitted or an abuse was detected, you need to remove
    docker exec -it YOUR_CONTAINER_FOR_REDIS_HERE sh -c "redis-cli DEL fa04ec7f8ce1bc05"
    ```
 
-   Replace `YOUR_CONTAINER_FOR_REDIS_HERE` with the Docker container's name before running the command. For example, if you enable a [Valkey instance with the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/valkey.md) by the MASH project, it should be `mash-valkey` (if is a shared one) or `mash-send-valkey` (if it is a dedicated one).
+   Replace `YOUR_CONTAINER_FOR_REDIS_HERE` with the Docker container's name before running the command. For example, if you enable a [Valkey instance with the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/components/valkey/README.md) by the MASH project, it should be `mash-valkey` (if is a shared one) or `mash-send-valkey` (if it is a dedicated one).
 
 If the command returns `(integer) 1`, the record for the file has been removed, and the file has become inaccessible.
 
