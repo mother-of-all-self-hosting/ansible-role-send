@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-# Project source code URL: https://github.com/timvisee/send
+# Project source code URL: https://gitlab.com/timvisee/send
 
 send_enabled: true
 
@@ -43,7 +43,7 @@ send_container_image_registry_prefix_upstream_default: registry.gitlab.com/
 
 send_container_image_self_build: false
 send_container_image_self_build_name: "timvisee/send:{{ send_container_image_self_build_repo_version }}"
-send_container_image_self_build_repo: "https://github.com/timvisee/send.git"
+send_container_image_self_build_repo: "https://gitlab.com/timvisee/send.git"
 send_container_image_self_build_repo_version: "{{ send_version if send_version != 'latest' else 'main' }}"
 send_container_image_self_build_src_files_path: "{{ send_base_path }}/docker-src"
 
@@ -239,7 +239,7 @@ send_redis_password: ""
 send_redis_db: ""
 
 # Control storage backend options
-# Also see: https://github.com/timvisee/send/blob/master/docs/docker.md#storage-backend-options
+# Also see: https://gitlab.com/timvisee/send/blob/master/docs/docker.md#storage-backend-options
 #
 # Valid values: localsystem (default), s3compatible, gcs
 send_storage_backend_option: localsystem
@@ -293,7 +293,7 @@ send_environment_variable_aws_secret_access_key: ""
 send_environment_variable_gcs_bucket: ""
 
 # Additional environment variables.
-# See: https://github.com/timvisee/send/blob/master/server/config.js
+# See: https://gitlab.com/timvisee/send/blob/master/server/config.js
 send_environment_variables_additional_variables: ""
 
 # send_restart_necessary controls whether the Send systemd

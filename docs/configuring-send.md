@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up Send
 
-This is an [Ansible](https://www.ansible.com/) role which installs [Send](https://github.com/timvisee/send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [Send](https://gitlab.com/timvisee/send) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
 Send is a fork of Mozilla's discontinued [Firefox Send](https://github.com/mozilla/send) which allows you to send files to others with a link. Files are end-to-end encrypted so they cannot be read by the server, and also can be protected with a password.
 
-See the project's [documentation](https://github.com/timvisee/send/blob/master/README.md) to learn what Send does and why it might be useful to you.
+See the project's [documentation](https://gitlab.com/timvisee/send/blob/master/README.md) to learn what Send does and why it might be useful to you.
 
 ## Prerequisites
 
@@ -155,7 +155,7 @@ send_environment_variable_download_counts: 1, 2, 3, 4, 5, {{ send_environment_va
 ```
 
 >[!NOTE]
-> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA. Refer to [this section](https://github.com/timvisee/send/blob/5124572dba7cac073d85f3e277d647aa3433ea38/docs/docker.md#environment-variables) on the official documentation for details.
+> The developer recommends to take a precaution to mitigate the risk of your instance being used as a hosting service of illegal contents, such as setting a short expiration time and setting a URL for inquiry based on DMCA. Refer to [this section](https://gitlab.com/timvisee/send/blob/master/docs/docker.md#environment-variables) on the official documentation for details.
 
 To set a URL to the contact page for DMCA requests, add the following configuration to your `vars.yml` file (adapt to your needs):
 
@@ -174,7 +174,7 @@ Take a look at:
 
 - [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `send_environment_variables_additional_variables` variable
 
-See its [environment variables](https://github.com/timvisee/send/blob/master/docs/docker.md#environment-variables) for a complete list of Send's config options that you can put in `send_environment_variables_additional_variables`.
+See its [environment variables](https://gitlab.com/timvisee/send/blob/master/docs/docker.md#environment-variables) for a complete list of Send's config options that you can put in `send_environment_variables_additional_variables`.
 
 ## Installing
 
@@ -225,7 +225,7 @@ When a DMCA compliant was submitted or an abuse was detected, you need to remove
 
 If the command returns `(integer) 1`, the record for the file has been removed, and the file has become inaccessible.
 
-Also see: [https://github.com/timvisee/send/blob/master/docs/takedowns.md](https://github.com/timvisee/send/blob/master/docs/takedowns.md)
+Also see: [https://gitlab.com/timvisee/send/blob/master/docs/takedowns.md](https://gitlab.com/timvisee/send/blob/master/docs/takedowns.md)
 
 ## Troubleshooting
 
