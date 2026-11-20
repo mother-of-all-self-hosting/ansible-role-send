@@ -34,9 +34,6 @@
   with_items:
     - send_uid
     - send_gid
-    - send_hostname
-    - send_path_prefix
-    - send_container_network
     - send_redis_hostname
 
 - name: Fail if Send storage backend option is invalid
